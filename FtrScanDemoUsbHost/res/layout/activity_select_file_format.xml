@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/radioGroup1"
+        android:layout_alignParentTop="true"
+        android:text="Please select the file format to save." />
+    
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="29dp" >
+
+        <RadioButton
+            android:id="@+id/radioBitmap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Bitmap" />
+
+        <RadioButton
+            android:id="@+id/radioWSQ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WSQ" />
+    </RadioGroup>
+    
+	<LinearLayout
+	     android:layout_height="wrap_content"
+	     android:id="@+id/linearLayout1"
+	     android:layout_width="fill_parent"
+	     android:layout_alignLeft="@+id/radioGroup1"
+         android:layout_below="@+id/radioGroup1"
+         android:layout_marginTop="24dp">
+    	<TextView
+        	android:id="@+id/textView2"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="File name: " />	    
+    	<EditText
+	        android:id="@+id/editFileName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:ems="10" >
+        	<requestFocus />
+    	</EditText>
+	    	    
+	</LinearLayout>   
+    
+    <Button
+        android:id="@+id/buttonOK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_marginTop="24dp"
+        android:text="OK" />
+
+    <TextView
+        android:id="@+id/textMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonOK"
+        android:layout_below="@+id/buttonOK"
+        android:layout_marginTop="24dp"
+        android:text="" />
+    
+</RelativeLayout>

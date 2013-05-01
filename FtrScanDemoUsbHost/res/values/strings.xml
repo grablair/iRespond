@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Futronic Scan Demo for USB Host Mode</string>
+    <string name="app_name">FtrScanDemoUsbHost</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_select_file_format">SelectFileFormatActivity</string>
+
+</resources>
