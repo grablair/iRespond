@@ -103,4 +103,5 @@ All server communication will be via HTTPS and JSON.
 5. Create a new record for the new patient/uuid.
 
 6. Display record to provider.
+	a. Edit record, add vaccination dose, etc.
 
