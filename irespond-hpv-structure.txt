@@ -1,0 +1,106 @@
+iRespond Packet Specifications
+==============================
+
+Identify Packet (Client -> Server):
+1 byte int    HEADER         = 0x01
+4 byte int    WSQ_SIZE       = N
+N byte byte[] WSQ_BYTE_ARRAY
+
+
+Identify Success Packet (Server -> Client):
+1  byte int  HEADER = 0x03
+16 byte uuid RESULT
+
+
+Identify Failure Packet (Server -> Client):
+1 byte int HEADER = 0x06
+
+
+Verify Packet (Client -> Server):
+1    byte int    HEADER         = 0x02
+4    byte int    NUM_UUIDS      = N
+N*16 byte uuid[] UUIDS
+4    byte int    WSQ_SIZE       = M
+M    byte byte[] WSQ_BYTE_ARRAY
+
+
+Verify Success Packet (Server -> Client):
+1 byte int HEADER = 0x04
+
+
+Verify Failure Packet (Server -> Client):
+1 byte int HEADER = 0x05
+
+
+Enroll Packet (Client -> Server):
+1 byte int HEADER     = 0x07
+4 byte int NUM_IMAGES = N
+FOR 1..N {
+  4 byte int    WSQ_SIZE       = M
+  M byte byte[] WSQ_BYTE_ARRAY
+}
+
+
+Enroll Success Packet (Server -> Client):
+1  byte int  HEADER = 0x08
+16 byte uuid RESULT
+
+
+General Error Packet (Server -> Client):
+1 byte int    HEADER    = 0x00
+4 byte int    ERROR_LEN = N
+N byte char[] ERROR_STR
+
+
+
+
+General Flow (iRespond App)
+===========================
+Takes two (maybe three) external calls:
+
+public Uuid identify():
+	Performs an identification. If the server finds a match,
+	the uuid is returned. If no match is found, the user is 
+	asked if they want to enroll() or try again. If the call
+	is aborted, null is returned.
+
+public boolean verify(List<Uuid> uuids):
+	Performs a verification. Verification is merely a narrowed
+	down identify, which returns true iff the scanned print
+	matches any of the given uuids. If the call is aborted, false
+	is returned.
+
+public/private? Uuid enroll():
+	Gathers 1+ prints of an individuals same finger. Sends them
+	all to the server, which does an enrollment. On success, the
+	new uuid is returned to the caller. If aborted, null is
+	returned.
+
+On any server error, the General Error packet is sent back. This error
+should be shown to the user (using Toast would be best), and the user
+should stay on the iRespond app and should be asked to retry. They can,
+of course, abort.
+
+
+
+
+General Flow (HPV Vaccine Tracker)
+==================================
+All server communication will be via HTTPS and JSON.
+
+1. Provider login.
+	a. Gets all provider IDs from server.
+	b. Calls iRespond.verify(providers).
+
+2. Assuming verification success, patient login.
+	a. Calls iRespond.identify().
+
+3. Assuming identification succeeds, patient lookup.
+	a. Server HPV server call with returned id.
+
+4. If results are found, go to step 6.
+
+5. Create a new record for the new patient/uuid.
+
+6. Display record to provider.
+
