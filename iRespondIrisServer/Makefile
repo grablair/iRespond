@@ -25,12 +25,16 @@ LIBS= \
 	-lboost_system \
 	-pthread
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=bin/iris
+OUTPUT_FOLDER=bin
+EXECUTABLE=iris
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(SOURCES) $(EXECUTABLE) test_send
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $@
+	$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_FOLDER)/$@
+
+test_send:
+	$(CC) -std=c++11 src/test_send.cpp src/PracticalSocket.cpp -o $(OUTPUT_FOLDER)/test_send
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@

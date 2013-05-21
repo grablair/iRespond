@@ -2,6 +2,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <sys/time.h>
+
 #include "FingerprintDatabase.h"
 
 #define MATCH_THRESHOLD 40
@@ -32,6 +34,8 @@ FingerprintDatabase::FingerprintDatabase(fs::path folder) {
   fs::directory_iterator end_itr;
   boost::uuids::string_generator gen;
   
+  int count = 0;
+  
   // Read in all .xyt (template) files.
   for (fs::directory_iterator itr(folder); itr != end_itr; ++itr) {
     std::string filename = itr->path().leaf().string();
@@ -42,8 +46,11 @@ FingerprintDatabase::FingerprintDatabase(fs::path folder) {
             TEMPLATE_EXTENSION.length()));
 
       templates[uuid] = temp;
+      count++;
     }
   }
+  
+  cout << "Loaded " << count << " fingerprint templates." << endl;
   
   this->databaseFolder = folder.string();
 }
@@ -54,19 +61,32 @@ FingerprintDatabase::FingerprintDatabase(fs::path folder) {
 bool FingerprintDatabase::identify(template_t *probe, uuid &oUuid) {
   int probeLen = bozorth_probe_init(probe);
   
+  struct timeval tv;
+  struct timeval tv2;
+  
+  gettimeofday(&tv, NULL);
+  
   int maxMatchScore = 0;
   uuid maxUuid;
+  int count = 0;
   for (auto itr = templates.begin(); itr != templates.end(); ++itr) {
     int matchScore = bozorth_to_gallery(probeLen, probe, itr->second.get());
-    if (matchScore >= 20) {
+    /*if (matchScore >= 0) {
       cout << "Potential match with: " << itr->first << endl;
       cout << "         Match Score: " << matchScore << endl << endl;
-    }
+    }*/
     if (matchScore > maxMatchScore) {
       maxMatchScore = matchScore;
       maxUuid = itr->first;
     }
+    count++;
   }
+  
+  gettimeofday(&tv2, NULL);
+  
+  cout << "Num Minutiae: " << probe->nrows << endl;
+  cout << "Probe Length: " << probeLen << endl;
+  cout << "Match Rate:   " << ((double) count / (tv2.tv_usec - tv.tv_usec) * 1000000) << " fingerprints / sec" << endl;
   
   if (maxMatchScore < MATCH_THRESHOLD) {
     boost::uuids::random_generator gen;
@@ -75,6 +95,8 @@ bool FingerprintDatabase::identify(template_t *probe, uuid &oUuid) {
     oUuid = newUuid;
     return false;
   }
+  
+  cout << "Match Score:  " << maxMatchScore << endl << endl;
   
   oUuid = maxUuid;
   return true;
@@ -87,6 +109,8 @@ bool FingerprintDatabase::verify(template_t *probe, boost::uuids::uuid uuid) {
   boost::shared_ptr<template_t> gallery = entry->second;
   
   int matchScore = bozorth_main(probe, gallery.get());
+  
+  cout << "Match score: " << matchScore << endl << endl;
   
   return matchScore >= MATCH_THRESHOLD;
 }

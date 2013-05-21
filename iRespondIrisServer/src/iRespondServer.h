@@ -53,7 +53,7 @@ class IrisServerTask : public ThreadPool::Task {
 
 void ParseMinutiae(struct xytq_struct &oxytq, MINUTIAE *minutiae, int w, int h);
 
-bool ProcessWSQTransfer(struct xytq_struct &oxytq, string message);
+void ProcessWSQTransfer(struct xytq_struct &oxytq, string wsqDataStr);
 
 }  // namespace hw4
 
