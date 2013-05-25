@@ -84,38 +84,43 @@ bool FingerprintDatabase::identify(template_t *probe, uuid &oUuid) {
   
   gettimeofday(&tv2, NULL);
   
-  cout << "Num Minutiae: " << probe->nrows << endl;
-  cout << "Probe Length: " << probeLen << endl;
-  cout << "Match Rate:   " << ((double) count / (tv2.tv_usec - tv.tv_usec) * 1000000) << " fingerprints / sec" << endl;
+  //cout << "Num Minutiae: " << probe->nrows << endl;
+  //cout << "Probe Length: " << probeLen << endl;
+  //cout << "Match Rate:   " << ((double) count / (tv2.tv_usec - tv.tv_usec) * 1000000) << " fingerprints / sec" << endl;
   
   if (maxMatchScore < MATCH_THRESHOLD) {
-    boost::uuids::random_generator gen;
-    uuid newUuid = gen();
-    add(newUuid, probe);
-    oUuid = newUuid;
     return false;
   }
   
-  cout << "Match Score:  " << maxMatchScore << endl << endl;
+  //cout << "Match Score:  " << maxMatchScore << endl << endl;
   
   oUuid = maxUuid;
   return true;
 }
 
-bool FingerprintDatabase::verify(template_t *probe, boost::uuids::uuid uuid) {
-  auto entry = templates.find(uuid);
-  if (entry == templates.end()) return false;
+bool FingerprintDatabase::verify(template_t *probe, std::set<uuid> &uuids) {
+  for (auto itr = uuids.begin(); itr != uuids.end(); ++itr) {
+    auto entry = templates.find(*itr);
+    if (entry == templates.end())
+      continue;
+    
+    boost::shared_ptr<template_t> gallery = entry->second;
+    
+    int matchScore = bozorth_main(probe, gallery.get());
+    
+    //cout << "Match score: " << matchScore << endl << endl;
+    
+    if (matchScore >= MATCH_THRESHOLD)
+      return true;
+  }
   
-  boost::shared_ptr<template_t> gallery = entry->second;
-  
-  int matchScore = bozorth_main(probe, gallery.get());
-  
-  cout << "Match score: " << matchScore << endl << endl;
-  
-  return matchScore >= MATCH_THRESHOLD;
+  return false;
 }
 
-void FingerprintDatabase::add(uuid uuid, template_t *temp) {
+uuid FingerprintDatabase::enroll(template_t *temp) {
+  boost::uuids::random_generator gen;
+  uuid uuid = gen();
+    
   boost::shared_ptr<template_t> ptr(temp);
   templates[uuid] = ptr;
   
@@ -132,6 +137,9 @@ void FingerprintDatabase::add(uuid uuid, template_t *temp) {
   }
   
   outputFile.close();
+  
+  return uuid;
 }
+
 
 }  // namespace iris

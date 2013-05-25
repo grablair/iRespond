@@ -2,6 +2,7 @@
 #include <fstream>
 #include <memory>
 #include <vector>
+#include <set>
 #include <sstream>
 #include <stdint.h>
 #include <string>
@@ -34,9 +35,7 @@ namespace iris {
 // in order to process new client connections.
 void IrisServer_ThrFn(ThreadPool::Task *t);
 
-string receiveFullMessage(TCPSocket *sock);
-
-void sendMessage(TCPSocket *socket, string message);
+void receive(TCPSocket *socket, void *vbuf, int32_t len);
 
 IrisServer::IrisServer(unsigned short port)
   : port_(port), kNumThreads(100) { 
@@ -74,96 +73,147 @@ bool IrisServer::Run(void) {
   }
 }
 
-#define HEADER_WSQ_IDENTIFY       0x01
-#define HEADER_WSQ_VERIFY         0x02
-#define HEADER_IDENTIFY_SUCCESS   0x03
-#define HEADER_IDENTIFY_FAILURE   0x06
-#define HEADER_VERIFY_SUCCESS     0x04
-#define HEADER_VERIFY_FAILURE     0x05
-#define HEADER_ERROR              0x00
-#define HEADER_ENROLL             0x07
+static uint8_t HEADER_WSQ_IDENTIFY      = 0x01;
+static uint8_t HEADER_WSQ_VERIFY        = 0x02;
+static uint8_t HEADER_WSQ_ENROLL        = 0x07;
+static uint8_t HEADER_IDENTIFY_SUCCESS  = 0x03;
+static uint8_t HEADER_IDENTIFY_FAILURE  = 0x06;
+static uint8_t HEADER_VERIFY_SUCCESS    = 0x04;
+static uint8_t HEADER_VERIFY_FAILURE    = 0x05;
+static uint8_t HEADER_ENROLL_SUCCESS    = 0x08;
+static uint8_t HEADER_ERROR             = 0x00;
 
 void IrisServer_ThrFn(ThreadPool::Task *t) {
   // Cast back our IrisServerTask structure with all of our new
   // client's information in it.
   IrisServerTask *ist = static_cast<IrisServerTask *>(t);
   
-  cout << "Connection received from " << ist->client->getForeignAddress() << ":" << ist->client->getForeignPort() << "." << endl << endl;
+  cout << "Connection received from " << ist->client->getForeignAddress() << ":" << ist->client->getForeignPort() << "." << endl;
   
-  // First extract xytq, for quality testing.
-  struct xytq_struct fingerTemplate;
-  string message = receiveFullMessage(ist->client);
-  uint8_t header = (uint8_t) message.at(0);
+  // Get packet header.
+  uint8_t header;
+  ist->client->recv(&header, 1);
+  
   try {
-    if (header != (char) HEADER_WSQ_IDENTIFY && 
-        header != (char) HEADER_WSQ_VERIFY) {
+    if (header == HEADER_WSQ_IDENTIFY) {
+      // Get WSQ file size.
+      int32_t wsqSize;
+      receive(ist->client, &wsqSize, 4);
+      
+      // Get WSQ file bytes.
+      char wsqData[wsqSize];
+      receive(ist->client, wsqData, wsqSize);
+      
+      // Get XYTQ coordinates of minutiae
+      struct xytq_struct fingerTemplate;
+      ProcessWSQTransfer(fingerTemplate, wsqSize, wsqData);
+      
+      // Quality is good, shrink down to a template.
+      template_t *probe = bz_prune(&fingerTemplate, 0);
+      
+      uuid matchUuid;
+      if (ist->database->identify(probe, matchUuid)) {
+        // Send identify success packet.
+        ist->client->send(&HEADER_IDENTIFY_SUCCESS, 1);
+        ist->client->send(matchUuid.data, 16);
+      } else {
+        // Send identify failure packet.
+        ist->client->send(&HEADER_IDENTIFY_FAILURE, 1);
+      }
+    } else if (header == HEADER_WSQ_VERIFY) {
+      // Perform Verification
+      int32_t numUuids;
+      receive(ist->client, &numUuids, 4);
+      
+      std::set<uuid> verifyUuids;
+      for (int32_t i = 0; i < numUuids; i++) {
+        uuid verifyUuid;
+        receive(ist->client, verifyUuid.data, 16);
+        verifyUuids.insert(verifyUuid);
+      }
+      
+      // Get WSQ file size.
+      int32_t wsqSize;
+      receive(ist->client, &wsqSize, 4);
+      
+      // Get WSQ file bytes.
+      char wsqData[wsqSize];
+      receive(ist->client, wsqData, wsqSize);
+      
+      // Get XYTQ coordinates of minutiae
+      struct xytq_struct fingerTemplate;
+      ProcessWSQTransfer(fingerTemplate, wsqSize, wsqData);
+      
+      // Quality is good, shrink down to a template.
+      template_t *probe = bz_prune(&fingerTemplate, 0);
+      
+      // Send result header.
+      uint8_t retHeader = ist->database->verify(probe, verifyUuids) ? 
+              HEADER_VERIFY_SUCCESS : HEADER_VERIFY_FAILURE;
+      ist->client->send(&retHeader, 1);
+    } else if (header == HEADER_WSQ_ENROLL) {
+      // Perform Enrollment
+      int32_t numImages;
+      receive(ist->client, &numImages, 4);
+      
+      // Get best template out of images.
+      struct xytq_struct bestTemplate;
+      bestTemplate.nrows = 0;
+      for (int32_t i = 0; i < numImages; i++) {
+        // Get WSQ file size.
+        int32_t wsqSize;
+        receive(ist->client, &wsqSize, 4);
+        
+        // Get WSQ file bytes.
+        char wsqData[wsqSize];
+        receive(ist->client, wsqData, wsqSize);
+        
+        // Parse image.
+        struct xytq_struct fingerTemplate;
+        fingerTemplate.nrows = 0;
+        try {
+          ProcessWSQTransfer(fingerTemplate, wsqSize, wsqData);
+        } catch (char const *errorMessage) {
+          if (strcmp(errorMessage, "Image quality too low."))
+            throw errorMessage;
+        }
+        
+        // Set best template if better.
+        if (fingerTemplate.nrows > bestTemplate.nrows)
+          bestTemplate = fingerTemplate;
+      }
+      
+      // If all images were too low quality, throw exception.
+      if (!bestTemplate.nrows) {
+        throw "Image quality too low.";
+      }
+      
+      template_t *temp = bz_prune(&bestTemplate, 0);
+      
+      
+      uuid uuid = ist->database->enroll(temp);
+      
+      ist->client->send(&HEADER_ENROLL_SUCCESS, 1);
+      ist->client->send(uuid.data, 16);
+    } else {
       throw "Invalid header.";
     }
-    
-    string wsqData = message.substr(1);
-    if (header == HEADER_WSQ_VERIFY) {
-      wsqData = wsqData.substr(16);
-    }
-    
-    ProcessWSQTransfer(fingerTemplate, wsqData);
   } catch (char const *errorMessage) {
-    cout << "Error: " << errorMessage << endl << endl;
-    cout << "=================================" << endl << endl;
+    //cout << "Error: " << errorMessage << endl << endl;
+    //cout << "=================================" << endl << endl;
     
-    string errorResponse;
-    errorResponse += (char) HEADER_ERROR;
-    errorResponse += errorMessage;
+    int32_t errLen = strlen(errorMessage);
     
-    sendMessage(ist->client, errorResponse);
-    
-    delete ist;
-    return;
+    try {
+      ist->client->send(&HEADER_ERROR, 1);
+      ist->client->send(&errLen, 4);
+      ist->client->send(errorMessage, errLen);
+    } catch (SocketException &e) {
+      cout << "Network error: " << e.what() << endl;
+    }
+  } catch (SocketException &e) {
+    cout << "Network error: " << e.what() << endl;
   }
-  
-  // Good quality, shrink it down to a template.
-  template_t *probe = bz_prune(&fingerTemplate, 0);
-  
-  if (header == HEADER_WSQ_IDENTIFY) {
-    cout << endl << "Performing identification." << endl << endl;
-    // Perform match.
-    boost::uuids::uuid uuid;
-    if (ist->database->identify(probe, uuid)) {
-      cout << "Match found: ";
-    } else {
-      cout << "No match found, new ID: ";
-    }
-    
-    cout << uuid << endl << endl;
-    
-    string response;
-    response += (char) HEADER_IDENTIFY_SUCCESS;
-    for (auto itr = uuid.begin(); itr != uuid.end(); ++itr) {
-      response += (char) *itr;
-    }
-    
-    sendMessage(ist->client, response);
-  } else if (header == HEADER_WSQ_VERIFY) {
-    uuid verifyUuid;
-    for (uint8_t i = 0; i < verifyUuid.size(); i++) {
-      verifyUuid.data[i] = (uint8_t) message.at(i+1);
-    }
-    
-    cout << endl << "Performing verification against: " << verifyUuid << endl << endl;
-    
-    string response;
-    if (ist->database->verify(probe, verifyUuid)) {
-      response += (char) HEADER_VERIFY_SUCCESS;
-      cout << "Verification successful." << endl << endl;
-    } else {
-      response += (char) HEADER_VERIFY_FAILURE;
-      cout << "Verification unsuccessful." << endl << endl;
-    }
-    
-    sendMessage(ist->client, response);
-  }
-  
-  cout << "=================================" << endl << endl;
-  // Send ID;
   
   delete ist;
 }
@@ -172,11 +222,8 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
  * Receives and processes a WSQ file over the network into a 
  * NIST xytq minutiae template.
  */
-void ProcessWSQTransfer(struct xytq_struct &oxytq, string wsqDataStr) {
+void ProcessWSQTransfer(struct xytq_struct &oxytq, int32_t wsqLen, const char *wsqData) {
   //cout << "Parsing WSQ stream." << endl;
-  
-  int wsqLen = wsqDataStr.length();
-  const char *wsqData = wsqDataStr.c_str();
   
   unsigned char *data;
   int w, h, d, ppi, lossyflag;
@@ -198,7 +245,7 @@ void ProcessWSQTransfer(struct xytq_struct &oxytq, string wsqDataStr) {
     throw "Image quality too low.";
   }
   
-  cout << "Quality: " << nfiq << endl;
+  //cout << "Quality: " << nfiq << endl;
   
   MINUTIAE *minutiae;
   int *quality_map, *direction_map, *low_contrast_map, *low_flow_map,
@@ -248,30 +295,13 @@ void ParseMinutiae(struct xytq_struct &oxytq, MINUTIAE *minutiae, int w, int h) 
   }
 }
 
-string receiveFullMessage(TCPSocket *sock) {
-  string fullMsg = "";
-  
-  uint32_t length;
-  sock->recv(&length, 4);
-    
-  char buf[1024];
-  int recvMsgSize;
-  while (fullMsg.length() < length && 
-        (recvMsgSize = sock->recv(buf, 1024)) > 0) {  // Zero means
-                                                      // end of transmission
-    fullMsg += string(buf, recvMsgSize);
+void receive(TCPSocket *socket, void *vbuf, int32_t len) {
+  char *buf = (char *) vbuf;
+  int32_t totalRead = 0;
+  while (totalRead < len) {
+    totalRead += socket->recv(buf + totalRead, len - totalRead);
   }
-    
-  return fullMsg;
 }
-
-void sendMessage(TCPSocket *socket, string message) {
-  uint32_t messageLen = message.length();
-  message = string((char *) &messageLen, 4) + message;
-  
-  socket->send(message.c_str(), message.length());
-}
-
 
 
 }  // namespace iris

@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <cerrno>
+#include <iomanip>
 
 #include <boost/uuid/uuid.hpp>            // uuid class
 #include <boost/uuid/uuid_generators.hpp> // generators
@@ -17,59 +18,92 @@ using boost::uuids::uuid;
 
 std::string get_file_contents(const char *filename);
 
-string receiveFullMessage(TCPSocket &sock);
-
-#define HEADER_WSQ_IDENTIFY       0x01
-#define HEADER_WSQ_VERIFY         0x02
-#define HEADER_IDENTIFY_SUCCESS   0x03
-#define HEADER_VERIFY_SUCCESS     0x04
-#define HEADER_VERIFY_FAILURE     0x05
-#define HEADER_ERROR              0x00
+static uint8_t HEADER_WSQ_IDENTIFY      = 0x01;
+static uint8_t HEADER_WSQ_VERIFY        = 0x02;
+static uint8_t HEADER_WSQ_ENROLL        = 0x07;
+static uint8_t HEADER_IDENTIFY_SUCCESS  = 0x03;
+static uint8_t HEADER_IDENTIFY_FAILURE  = 0x06;
+static uint8_t HEADER_VERIFY_SUCCESS    = 0x04;
+static uint8_t HEADER_VERIFY_FAILURE    = 0x05;
+static uint8_t HEADER_ENROLL_SUCCESS    = 0x08;
+static uint8_t HEADER_ERROR             = 0x00;
 
 int main(int argc, char **argv) {
-  char header = (char) (argv[1][0] == 'i' ? HEADER_WSQ_IDENTIFY : HEADER_WSQ_VERIFY);
-  
-  char pref[2];
-  pref[0] = header;
-  pref[1] = '\0';
-  
-  string prefix = pref;
-  if (header == (char) HEADER_WSQ_VERIFY) {
-    boost::uuids::string_generator gen;
-    uuid verifyUuid = gen(std::string(argv[3]));
-    for (auto itr = verifyUuid.begin(); itr != verifyUuid.end(); ++itr) {
-      prefix += (char) *itr;
-    }
-  }
-  string message = prefix + get_file_contents(argv[2]);
-  
-  uint32_t length = message.length();
-  char *lenBytes = (char *) &length;
-  message = string(lenBytes, 4) + message;
-        
   try {
-    TCPSocket socket("localhost", 8080);
-    socket.send(message.c_str(), message.length());
+    TCPSocket socket("localhost", (unsigned short) atoi(argv[1]));
     
-    string response = receiveFullMessage(socket);
-    
-    switch ((uint8_t) response.at(0)) {
-    case HEADER_IDENTIFY_SUCCESS:
-      uuid responseUuid;
-      for (uint8_t i = 0; i < responseUuid.size(); i++) {
-        responseUuid.data[i] = (uint8_t) response.at(i + 1);
+    string wsqData;
+    int32_t wsqLen, numUuids, numImages;
+    switch (argv[2][0]) {
+    case 'i':
+    case 'I':
+      socket.send(&HEADER_WSQ_IDENTIFY, 1);
+      wsqData = get_file_contents(argv[3]);
+      wsqLen = wsqData.length();
+      socket.send(&wsqLen, 4);
+      socket.send(wsqData.c_str(), wsqLen);
+      break;
+    case 'v':
+    case 'V':
+      socket.send(&HEADER_WSQ_VERIFY, 1);
+      wsqData = get_file_contents(argv[3]);
+      wsqLen = wsqData.length();
+      
+      numUuids = argc - 4;
+      socket.send(&numUuids, 4);
+      
+      boost::uuids::string_generator gen;
+      for (int i = 4; i < argc; i++) {
+        uuid verifyUuid = gen(std::string(argv[i]));
+        socket.send(verifyUuid.data, 16);
       }
+      
+      socket.send(&wsqLen, 4);
+      socket.send(wsqData.c_str(), wsqLen);
+      break;
+    case 'e':
+    case 'E':
+      socket.send(&HEADER_WSQ_ENROLL, 1);
+      
+      numImages = argc - 3;
+      socket.send(&numImages, 4);
+      
+      for (int i = 3; i < argc; i++) {
+        wsqData = get_file_contents(argv[i]);
+        wsqLen = wsqData.length();
+        
+        socket.send(&wsqLen, 4);
+        socket.send(wsqData.c_str(), wsqLen);
+      }
+      
+      break;
+    default:
+      cout << "Invalid function. [i]dentify, [v]erify, or [e]nroll." << endl;
+      exit(EXIT_FAILURE);
+    }
+    
+    uint8_t header;
+    socket.recv(&header, 1);
+    
+    if (header == HEADER_IDENTIFY_SUCCESS || header == HEADER_ENROLL_SUCCESS) {
+      uuid responseUuid;
+      socket.recv(responseUuid.data, 16);
       cout << responseUuid << endl;
-      break;
-    case HEADER_VERIFY_SUCCESS:
+    } else if (header == HEADER_IDENTIFY_FAILURE) {
+      cout << "No match found." << endl;
+    } else if (header == HEADER_VERIFY_SUCCESS) {
       cout << "Verification successful." << endl;
-      break;
-    case HEADER_VERIFY_FAILURE:
-      cout << "Verification failed." << endl;
-      break;
-    case HEADER_ERROR:
-      cout << "Error: " << response.substr(1) << endl;
-      break;
+    } else if (header == HEADER_VERIFY_FAILURE) {
+      cout << "Verification unsuccessful." << endl;
+    } else if (header == HEADER_ERROR) {
+      int32_t errLen;
+      socket.recv(&errLen, 4);
+      char error[errLen + 1];
+      error[errLen] = '\0';
+      socket.recv(error, errLen);
+      cout << "Error: " << error << endl;
+    } else {
+      cout << "Invalid response header: " << hex << (int) header << endl;
     }
   } catch (SocketException& e) {
     cout << e.what() << endl;
@@ -90,21 +124,4 @@ std::string get_file_contents(const char *filename)
     return(contents);
   }
   throw(errno);
-}
-
-string receiveFullMessage(TCPSocket &sock) {
-  string fullMsg = "";
-  
-  uint32_t length;
-  sock.recv(&length, 4);
-    
-  char buf[1024];
-  int recvMsgSize;
-  while (fullMsg.length() < length && 
-        (recvMsgSize = sock.recv(buf, 1024)) > 0) {  // Zero means
-                                                      // end of transmission
-    fullMsg += string(buf, recvMsgSize);
-  }
-    
-  return fullMsg;
 }
