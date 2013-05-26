@@ -14,6 +14,8 @@ public class BiometricInterface {
 	public static RequestType mRequest = null;
 	public static Collection<UUID> mVerifyUuids = null;
 	
+	public static Collection<byte[]> mEnrollImages = null;
+	
 	public static final int MESSAGE_SHOW_MSG = 1;
     public static final int MESSAGE_SHOW_SCANNER_INFO = 2;
     public static final int MESSAGE_SHOW_IMAGE = 3;
@@ -28,6 +30,8 @@ public class BiometricInterface {
     public static int mImageWidth = 0;
     public static int mImageHeight = 0;
     public static Bitmap mBitmapFP = null;
+    
+    public static UUID mIdentifyResult;
     
     public static void identify() {
     	mRequest = RequestType.IDENTIFY;
