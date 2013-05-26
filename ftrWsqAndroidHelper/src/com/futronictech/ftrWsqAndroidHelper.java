@@ -26,7 +26,7 @@ public class ftrWsqAndroidHelper {
 	private native boolean JNIGetImageParameters(byte[] wsqImg);
 	private native boolean JNIWsqToRawImage(byte[] wsqImg, byte[] rawImg);
 	
-	ftrWsqAndroidHelper()
+	public ftrWsqAndroidHelper()
 	{
 		mWidth = mHeight = 0;
 		mDPI = mRAW_size = mBMP_size = mWSQ_size = 0;

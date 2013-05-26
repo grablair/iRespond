@@ -80,7 +80,6 @@ public class FtrScanDemoUsbHostActivity extends Activity {
         mButtonSave = (Button) findViewById(R.id.btnSave);
         mMessage = (TextView) findViewById(R.id.tvMessage);
         mScannerInfo = (TextView) findViewById(R.id.tvScannerInfo);
-        mImageRating = (TextView) findViewById(R.id.textRating);
         mFingerImage = (ImageView) findViewById(R.id.imageFinger);
 
 
@@ -196,7 +195,8 @@ public class FtrScanDemoUsbHostActivity extends Activity {
 		
 		// byte array created
 		if( wsqHelper.ConvertRawToWsq(hDevice, mImageWidth, mImageHeight, 2.25f, mImageFP, wsqImg) )
-		{  	
+		{
+			try {
 			int wsqLength = wsqImg.length;
 		
 			Socket sendChannel = new Socket("localhost", 12345);
@@ -206,9 +206,12 @@ public class FtrScanDemoUsbHostActivity extends Activity {
 			
 			// call either the verify or identify method
 			if (verifying) {
-				verify (wsqImg, wsqLength, writer, dis);
+				//verify (wsqImg, wsqLength, writer, dis);
 			} else {
 				identify (wsqImg, wsqLength, writer, dis);
+			}
+			} catch (IOException ioe) {
+				// TODO
 			}
 						
 		}
@@ -299,7 +302,7 @@ public class FtrScanDemoUsbHostActivity extends Activity {
             dis.readFully(data);
         }
 		
-    	return verified;
+    	return true;
     	
     }
     
