@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
+import org.irespond.iris.database.Database;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,6 +41,7 @@ public class FtrScanDemoUsbHostActivity extends Activity {
 	private Button mButtonSave;
 	private static TextView mMessage;
 	private static TextView mScannerInfo;
+	private static TextView mImageRating;
 	private static ImageView mFingerImage;
 	
     public static boolean mStop = false;
@@ -77,6 +80,7 @@ public class FtrScanDemoUsbHostActivity extends Activity {
         mButtonSave = (Button) findViewById(R.id.btnSave);
         mMessage = (TextView) findViewById(R.id.tvMessage);
         mScannerInfo = (TextView) findViewById(R.id.tvScannerInfo);
+        mImageRating = (TextView) findViewById(R.id.textRating);
         mFingerImage = (ImageView) findViewById(R.id.imageFinger);
 
 
@@ -361,6 +365,14 @@ public class FtrScanDemoUsbHostActivity extends Activity {
         c.drawBitmap(emptyBmp, 0, 0, paint); 
         
         mFingerImage.setImageBitmap(mBitmapFP);
+        
+        byte[][] image2d = new byte[mImageHeight][mImageWidth];
+        for (int i = 0; i < mImageWidth * mImageHeight; i++) {
+        	image2d[i / mImageWidth][i % mImageWidth] = mImageFP[i];
+        }
+        int userId = Database.getInstance().enrollIfNew(image2d);
+        
+        mMessage.setText("" + userId);
     }        
 
     

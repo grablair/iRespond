@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+<<<<<<< HEAD
     >
 <TextView android:text=" " android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/tvScannerInfo"></TextView>
 
@@ -29,3 +29,96 @@
 	    android:layout_height="wrap_content"
 		/>
 </LinearLayout>
+=======
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tvScannerInfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" " >
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <CheckBox
+            android:id="@+id/cbFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:checked="true"
+            android:text="Frame" >
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/cbLFD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="LFD" >
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/cbInvertImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Invert" >
+        </CheckBox>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text=" Scan " />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:enabled="false"
+            android:text=" Stop " />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:enabled="false"
+            android:text=" Save " />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" " >
+    </TextView>
+
+    <ImageView
+        android:id="@+id/imageFinger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textRating"
+        android:layout_width="63dp"
+        android:layout_height="100dp"
+        android:text="ID"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="36sp" />
+
+</LinearLayout>
+>>>>>>> 5df272f9485b263cbc4ea7af647717cde49757f2
