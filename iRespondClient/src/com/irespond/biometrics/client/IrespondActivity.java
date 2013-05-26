@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class IdentifyActivity extends Activity {
+public class IrespondActivity extends Activity {
 	private static final int ENROLL_IMAGE_COUNT = 3;
 	
 	/** Called when the activity is first created. */
@@ -235,6 +235,11 @@ public class IdentifyActivity extends Activity {
 		usb_host_ctx.Destroy();
 	}
 
+	/**
+	 * Starts scanning via the FPScan.
+	 * 
+	 * @return true iff all succeeds.
+	 */
 	private static boolean StartScan() {
 		mFPScan = new FPScan(usb_host_ctx, mHandler);
 		mFPScan.start();
@@ -242,6 +247,9 @@ public class IdentifyActivity extends Activity {
 		return true;
 	}
 	
+	/**
+	 * Switches to scan mode and waits for the scan button being pressed.
+	 */
 	private void initScanMode() {
 		usb_host_ctx = new UsbDeviceDataExchangeImpl(this, mHandler);
 
@@ -261,7 +269,9 @@ public class IdentifyActivity extends Activity {
 			if(!usb_host_ctx.IsPendingOpen()) {
 				Toast.makeText(this, "Can not start scan operation. Can't open scanner device", Toast.LENGTH_LONG).show();
 			}
-		}    
+		}
+		
+		showProgress(false);
 	}
 
 	// The Handler that gets information back from the FPScan
@@ -299,6 +309,9 @@ public class IdentifyActivity extends Activity {
 		}
 	};
 
+	/**
+	 * Displays a frame on the screen.
+	 */
 	private static void ShowBitmap() {
 		int[] pixels = new int[BiometricInterface.mImageWidth * BiometricInterface.mImageHeight];
 		for( int i=0; i<BiometricInterface.mImageWidth * BiometricInterface.mImageHeight; i++)
@@ -329,7 +342,7 @@ public class IdentifyActivity extends Activity {
 
 
 	/**
-	 * Shows the progress UI and hides the login form.
+	 * Shows the progress UI and hides the fingerprint image.
 	 */
 	 @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {

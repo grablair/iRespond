@@ -11,7 +11,7 @@ public class BiometricInterface {
 		IDENTIFY, VERIFY, ENROLL
 	}
 	
-	public static RequestType mRequest = null;
+	protected static RequestType mRequest = null;
 	public static Collection<UUID> mVerifyUuids = null;
 	
 	public static Collection<byte[]> mEnrollImages = null;
