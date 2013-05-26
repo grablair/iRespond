@@ -90,18 +90,13 @@ public class FPScan {
                 //set options
                 flag = 0;
                 mask = devScan.FTR_OPTIONS_DETECT_FAKE_FINGER | devScan.FTR_OPTIONS_INVERT_IMAGE;
-                if(FtrScanDemoUsbHostActivity.mLFD)
-                	flag |= devScan.FTR_OPTIONS_DETECT_FAKE_FINGER;
-                if( FtrScanDemoUsbHostActivity.mInvertImage)
-                	flag |= devScan.FTR_OPTIONS_INVERT_IMAGE;                
+             
                 if( !devScan.SetOptions(mask, flag) )
     	        	mHandler.obtainMessage(FtrScanDemoUsbHostActivity.MESSAGE_SHOW_MSG, -1, -1, devScan.GetErrorMessage()).sendToTarget();
                 // get frame / image2
                 long lT1 = SystemClock.uptimeMillis();
-                if( FtrScanDemoUsbHostActivity.mFrame )
-                	bRet = devScan.GetFrame(FtrScanDemoUsbHostActivity.mImageFP);
-                else
-                	bRet = devScan.GetImage2(4,FtrScanDemoUsbHostActivity.mImageFP);
+                bRet = devScan.GetFrame(FtrScanDemoUsbHostActivity.mImageFP);
+
                 if( !bRet )
                 {
                 	mHandler.obtainMessage(FtrScanDemoUsbHostActivity.MESSAGE_SHOW_MSG, -1, -1, devScan.GetErrorMessage()).sendToTarget();
@@ -118,10 +113,8 @@ public class FPScan {
                 }
                 else
                 {
-                	if( FtrScanDemoUsbHostActivity.mFrame ) 
-                		strInfo = String.format("OK. GetFrame time is %d(ms)",  SystemClock.uptimeMillis()-lT1);
-                	else
-                		strInfo = String.format("OK. GetImage2 time is %d(ms)",  SystemClock.uptimeMillis()-lT1);
+                	strInfo = String.format("OK. GetFrame time is %d(ms)",  SystemClock.uptimeMillis()-lT1);
+
                 	mHandler.obtainMessage(FtrScanDemoUsbHostActivity.MESSAGE_SHOW_MSG, -1, -1, strInfo ).sendToTarget();
                 }
                 //show image

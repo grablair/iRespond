@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.futronictech"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0" android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.USB_PERMISSION" />
@@ -35,10 +35,6 @@
         </activity>
         <activity android:name="com.futronictech.ftrScanApiAndroidHelper" />
         <activity android:name="com.futronictech.ftrWsqAndroidHelper" />
-        <activity
-            android:name=".SelectFileFormatActivity"
-            android:label="@string/title_activity_select_file_format" >
-        </activity>
     </application>
 
 </manifest>
