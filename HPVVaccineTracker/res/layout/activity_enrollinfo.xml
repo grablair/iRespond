@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:background="#EEEEEE"
+	    android:paddingTop="10dp"
+	    android:paddingBottom="10dp" >
+        
+	    <TextView 
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="Enrollment"
+			android:textSize="36sp"
+			android:gravity="center"
+			/>
+    
+	    <TextView
+	        android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="SID"
+			android:textSize="14sp"
+			android:gravity="center"
+	        />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"  >
+      
+        <EditText
+            android:id="@+id/familyname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Family name..."
+            />
+        
+        <EditText
+            android:id="@+id/givenname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Given name..."
+            />            
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"  >
+      
+        <EditText
+            android:id="@+id/mothername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Mother's name..."
+            />
+        
+        <EditText
+            android:id="@+id/fathername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Father's name..."
+            />            
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"  >
+      
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Phone number..."
+            />
+        
+        <CheckBox
+            android:id="@+id/sms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMS Reminders?"
+            />            
+    </LinearLayout>
+    
+    <EditText 
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="Address..."
+		android:padding="10dp" 
+        />
+    
+    <EditText 
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="Village, town, neighborhood, etc..."
+		android:padding="10dp" 
+        />
+
+    <Button
+        android:id="@+id/enrollInfoDone"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:hint="Done"
+		android:textSize="36sp"
+		android:padding="20dp" 
+		
+        />
+</LinearLayout>
