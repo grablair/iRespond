@@ -57,6 +57,8 @@ public class ServerInterface {
 			callback.onFailure("Unable to find host.");
 		} catch (IOException e) {
 			callback.onFailure("Communication error.");
+		} catch (Exception e) {
+			callback.onFailure(e.getClass().getCanonicalName());
 		} finally {
 			if (socket != null && !socket.isClosed())
 				try { socket.close(); } catch (IOException e) { }
