@@ -108,12 +108,20 @@
 		android:padding="10dp" 
         />
 
-    <Button
-        android:id="@+id/enrollInfoDone"
-        android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:gravity="center_horizontal"
-		android:hint="Done"
-		android:textSize="36sp"
-		android:padding="20dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/enrollInfoDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="37dp"
+            android:text="Done"
+            android:textSize="36sp" />
+
+    </RelativeLayout>
+
 </LinearLayout>
