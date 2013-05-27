@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EEEEEE"
+        android:background="@string/header_color"
         android:orientation="vertical"
         android:paddingBottom="10dp"
         android:paddingTop="10dp" >
@@ -21,7 +21,7 @@
             android:layout_gravity="center"
             android:text="@string/title_activity_provider_login"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="36sp" />
+            android:textSize="@string/header_size" />
 
     </LinearLayout>
 

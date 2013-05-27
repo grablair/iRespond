@@ -8,22 +8,5 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HPVVaccineTracking" >
 
-    <LinearLayout
-	    android:id="@+id/header"
-        android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-	    android:orientation="vertical"
-	    android:background="@string/header_color"
-	    android:paddingTop="10dp"
-	    android:paddingBottom="10dp" >
-        
-	    <TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="Scan Patient's Finger"
-			android:textSize="@string/header_size"
-			android:gravity="center"
-			/>
-
-    </LinearLayout>
+    
 </RelativeLayout>
