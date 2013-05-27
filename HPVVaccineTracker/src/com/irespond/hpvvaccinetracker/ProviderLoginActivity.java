@@ -1,7 +1,8 @@
-package com.example.hpvvaccinetracker;
+package com.irespond.hpvvaccinetracker;
 
 import java.util.UUID;
 
+import com.example.hpvvaccinetracker.R;
 import com.irespond.biometrics.client.BiometricInterface;
 import com.irespond.biometrics.client.IrespondActivity;
 

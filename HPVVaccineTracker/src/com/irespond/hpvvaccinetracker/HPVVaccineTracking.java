@@ -1,4 +1,6 @@
-package com.example.hpvvaccinetracker;
+package com.irespond.hpvvaccinetracker;
+
+import com.example.hpvvaccinetracker.R;
 
 import android.os.Bundle;
 import android.app.Activity;

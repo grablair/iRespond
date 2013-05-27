@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.hpvvaccinetracker.ProviderLoginActivity"
+            android:name="com.irespond.hpvvaccinetracker.ProviderLoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.hpvvaccinetracker.HPVVaccineTracking"
+            android:name="com.irespond.hpvvaccinetracker.HPVVaccineTracking"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,11 +38,11 @@
         <activity android:name="com.irespond.biometrics.client.IrespondActivity" >
         </activity>
         <activity
-            android:name="com.example.hpvvaccinetracker.ScanPatientActivity"
+            android:name="com.irespond.hpvvaccinetracker.ScanPatientActivity"
             android:label="@string/title_activity_scan_patient" >
         </activity>
         <activity
-            android:name="com.example.hpvvaccinetracker.RecordFoundActivity"
+            android:name="com.irespond.hpvvaccinetracker.RecordFoundActivity"
             android:label="@string/title_activity_record_found" >
         </activity>
     </application>
