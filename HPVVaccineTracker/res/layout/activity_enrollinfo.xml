@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 	    android:orientation="vertical"
-	    android:background="#EEEEEE"
+	    android:background="@string/header_color"
 	    android:paddingTop="10dp"
 	    android:paddingBottom="10dp" >
         
@@ -16,7 +16,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="Enrollment"
-			android:textSize="36sp"
+			android:textSize="@string/header_size"
 			android:gravity="center"
 			/>
     
@@ -112,9 +112,8 @@
         android:id="@+id/enrollInfoDone"
         android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
 		android:hint="Done"
 		android:textSize="36sp"
-		android:padding="20dp" 
-		
-        />
+		android:padding="20dp" />
 </LinearLayout>

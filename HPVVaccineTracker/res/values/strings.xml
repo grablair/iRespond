@@ -7,4 +7,7 @@
     <string name="title_activity_provider_login">Provider Login</string>
     <string name="login_button_provider_login">Login</string>
 
+    <string name="header_color">#EEEEEE</string>
+    <string name="header_size">36sp</string>
+    
 </resources>
