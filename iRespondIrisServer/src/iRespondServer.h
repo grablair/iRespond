@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <netinet/in.h>
 
 extern "C" {
 #include <bozorth.h>
@@ -14,6 +15,11 @@ extern "C" {
 #include "./ThreadPool.h"
 #include "./PracticalSocket.h"
 #include "FingerprintDatabase.h"
+
+#define ntohll(x) \
+  ( ((uint64_t) (ntohl((uint32_t)((x << 32) >> 32) )) << 32) |   \
+    ntohl(((uint32_t)(x >> 32))) )
+#define htonll(x) (ntohll(x))
 
 namespace iris {
 

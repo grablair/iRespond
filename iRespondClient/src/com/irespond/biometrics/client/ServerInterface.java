@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.UUID;
 
+import android.os.AsyncTask;
+
 public class ServerInterface {
 	private static final byte HEADER_WSQ_IDENTIFY      = 0x01;
 	private static final byte HEADER_WSQ_VERIFY        = 0x02;
@@ -20,132 +22,171 @@ public class ServerInterface {
 	private static final byte HEADER_ENROLL_SUCCESS    = 0x08;
 	private static final byte HEADER_ERROR             = 0x00;
 	
-	public static String serverAddress = "localhost";
+	public static String serverAddress = "192.168.1.112";
 	public static int serverPort = 8080;
 	
-	public static void identify(byte[] wsqImage, ServerCallback<UUID> callback) {
-		Socket socket = null;
-		try {
-			socket = new Socket(serverAddress, serverPort);
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			
-			out.write(HEADER_WSQ_IDENTIFY);
-			out.write(ByteBuffer.allocate(4).putInt(wsqImage.length).array());
-			out.write(wsqImage);
-			
-			byte retHeader = in.readByte();
-			
-			switch (retHeader) {
-			case HEADER_IDENTIFY_SUCCESS:
-				byte[] uuidBytes = new byte[16];
-				in.read(uuidBytes);
-				UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
-				callback.onSuccess(uuid);
-				break;
-			case HEADER_IDENTIFY_FAILURE:
-				callback.onSuccess(null);
-				break;
-			case HEADER_ERROR:
-				callback.onFailure(getErrorString(in));
-				break;
-			default:
-				callback.onFailure("Invalid response header.");
-				break;
+	public static void identify(final byte[] wsqImage, final ServerCallback<UUID> callback) {
+		new AsyncTask<Void, Void, Object>() {
+			@Override
+			protected Object doInBackground(Void... arg0) {
+				Socket socket = null;
+				try {
+					socket = new Socket(serverAddress, serverPort);
+					DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+					DataInputStream in = new DataInputStream(socket.getInputStream());
+					
+					out.write(HEADER_WSQ_IDENTIFY);
+					out.write(ByteBuffer.allocate(4).putInt(wsqImage.length).array());
+					out.write(wsqImage);
+					
+					byte retHeader = in.readByte();
+					
+					switch (retHeader) {
+					case HEADER_IDENTIFY_SUCCESS:
+						byte[] uuidBytes = new byte[16];
+						in.read(uuidBytes);
+						ByteBuffer buf = ByteBuffer.wrap(uuidBytes);
+						
+						long mostSig = buf.getLong();
+						long leastSig = buf.getLong();
+						UUID uuid = new UUID(mostSig, leastSig);
+						return uuid;
+					case HEADER_IDENTIFY_FAILURE:
+						return null;
+					case HEADER_ERROR:
+						return getErrorString(in);
+					default:
+						return "Invalid response header.";
+					}
+				} catch (UnknownHostException e) {
+					return "Unable to find host.";
+				} catch (IOException e) {
+					return "Communication error.";
+				} catch (Exception e) {
+					return e.getClass().getCanonicalName();
+				} finally {
+					if (socket != null && !socket.isClosed())
+						try { socket.close(); } catch (IOException e) { }
+				}
 			}
-		} catch (UnknownHostException e) {
-			callback.onFailure("Unable to find host.");
-		} catch (IOException e) {
-			callback.onFailure("Communication error.");
-		} catch (Exception e) {
-			callback.onFailure(e.getClass().getCanonicalName());
-		} finally {
-			if (socket != null && !socket.isClosed())
-				try { socket.close(); } catch (IOException e) { }
-		}
+			
+			@Override
+			protected void onPostExecute(Object result) {
+				if (result instanceof String)
+					callback.onFailure((String) result);
+				else
+					callback.onSuccess((UUID) result);
+			}
+		}.execute();
+		
 	}
 	
-	public static void verify(Collection<UUID> uuids, byte[] wsqImage, ServerCallback<Boolean> callback) {
-		Socket socket = null;
-		try {
-			socket = new Socket(serverAddress, serverPort);
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			
-			out.write(HEADER_WSQ_VERIFY);
-			out.write(ByteBuffer.allocate(4).putInt(uuids.size()).array());
-			for (UUID uuid : uuids)
-				out.write(ByteBuffer.allocate(16).putLong(uuid.getMostSignificantBits())
-						.putLong(uuid.getLeastSignificantBits()).array());
-			
-			out.write(ByteBuffer.allocate(4).putInt(wsqImage.length).array());
-			out.write(wsqImage);
-			
-			byte retHeader = in.readByte();
-			
-			switch (retHeader) {
-			case HEADER_VERIFY_SUCCESS:
-				callback.onSuccess(true);
-				break;
-			case HEADER_VERIFY_FAILURE:
-				callback.onSuccess(false);
-				break;
-			case HEADER_ERROR:
-				callback.onFailure(getErrorString(in));
-				break;
-			default:
-				callback.onFailure("Invalid response header.");
-				break;
+	public static void verify(final Collection<UUID> uuids, final byte[] wsqImage, final ServerCallback<Boolean> callback) {
+		new AsyncTask<Void, Void, Object>() {
+			@Override
+			protected Object doInBackground(Void... arg0) {
+				Socket socket = null;
+				try {
+					socket = new Socket(serverAddress, serverPort);
+					DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+					DataInputStream in = new DataInputStream(socket.getInputStream());
+					
+					out.write(HEADER_WSQ_VERIFY);
+					out.write(ByteBuffer.allocate(4).putInt(uuids.size()).array());
+					for (UUID uuid : uuids)
+						out.write(ByteBuffer.allocate(16).putLong(uuid.getMostSignificantBits())
+								.putLong(uuid.getLeastSignificantBits()).array());
+					
+					out.write(ByteBuffer.allocate(4).putInt(wsqImage.length).array());
+					out.write(wsqImage);
+					
+					byte retHeader = in.readByte();
+					
+					switch (retHeader) {
+					case HEADER_VERIFY_SUCCESS:
+						return true;
+					case HEADER_VERIFY_FAILURE:
+						return false;
+					case HEADER_ERROR:
+						return getErrorString(in);
+					default:
+						return "Invalid response header.";
+					}
+				} catch (UnknownHostException e) {
+					return "Unable to find host.";
+				} catch (IOException e) {
+					return "Communication error.";
+				} finally {
+					if (socket != null && !socket.isClosed())
+						try { socket.close(); } catch (IOException e) { }
+				}
 			}
-		} catch (UnknownHostException e) {
-			callback.onFailure("Unable to find host.");
-		} catch (IOException e) {
-			callback.onFailure("Communication error.");
-		} finally {
-			if (socket != null && !socket.isClosed())
-				try { socket.close(); } catch (IOException e) { }
-		}
+			
+			@Override
+			protected void onPostExecute(Object result) {
+				if (result instanceof String)
+					callback.onFailure((String) result);
+				else
+					callback.onSuccess((Boolean) result);
+			}
+		}.execute();
 	}
 	
-	protected static void enroll(Collection<byte[]> wsqImages, ServerCallback<UUID> callback) {
-		Socket socket = null;
-		try {
-			socket = new Socket(serverAddress, serverPort);
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			
-			out.write(HEADER_WSQ_ENROLL);
-			out.write(ByteBuffer.allocate(4).putInt(wsqImages.size()).array());
-			
-			for (byte[] wsqImage : wsqImages) {
-				out.write(ByteBuffer.allocate(4).putInt(wsqImage.length).array());
-				out.write(wsqImage);
+	protected static void enroll(final Collection<byte[]> wsqImages, final ServerCallback<UUID> callback) {
+		new AsyncTask<Void, Void, Object>() {
+			@Override
+			protected Object doInBackground(Void... arg0) {
+				Socket socket = null;
+				try {
+					socket = new Socket(serverAddress, serverPort);
+					DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+					DataInputStream in = new DataInputStream(socket.getInputStream());
+					
+					out.write(HEADER_WSQ_ENROLL);
+					out.write(ByteBuffer.allocate(4).putInt(wsqImages.size()).array());
+					
+					for (byte[] wsqImage : wsqImages) {
+						out.write(ByteBuffer.allocate(4).putInt(wsqImage.length).array());
+						out.write(wsqImage);
+					}
+					
+					byte retHeader = in.readByte();
+					
+					switch (retHeader) {
+					case HEADER_ENROLL_SUCCESS:
+						byte[] uuidBytes = new byte[16];
+						in.read(uuidBytes);
+						ByteBuffer buf = ByteBuffer.wrap(uuidBytes);
+						
+						long mostSig = buf.getLong();
+						long leastSig = buf.getLong();
+						UUID uuid = new UUID(mostSig, leastSig);
+						return uuid;
+					case HEADER_ERROR:
+						return getErrorString(in);
+					default:
+						return "Invalid response header.";
+					}
+				} catch (UnknownHostException e) {
+					return "Unable to find host.";
+				} catch (IOException e) {
+					return "Communication error.";
+				} catch (Exception e) {
+					return e.getClass().getCanonicalName();
+				} finally {
+					if (socket != null && !socket.isClosed())
+						try { socket.close(); } catch (IOException e) { }
+				}
 			}
 			
-			byte retHeader = in.readByte();
-			
-			switch (retHeader) {
-			case HEADER_ENROLL_SUCCESS:
-				byte[] uuidBytes = new byte[16];
-				in.read(uuidBytes);
-				UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
-				callback.onSuccess(uuid);
-				break;
-			case HEADER_ERROR:
-				callback.onFailure(getErrorString(in));
-				break;
-			default:
-				callback.onFailure("Invalid response header.");
-				break;
+			@Override
+			protected void onPostExecute(Object result) {
+				if (result instanceof String)
+					callback.onFailure((String) result);
+				else
+					callback.onSuccess((UUID) result);
 			}
-		} catch (UnknownHostException e) {
-			callback.onFailure("Unable to find host.");
-		} catch (IOException e) {
-			callback.onFailure("Communication error.");
-		} finally {
-			if (socket != null && !socket.isClosed())
-				try { socket.close(); } catch (IOException e) { }
-		}
+		}.execute();
 	}
 	
 	private static String getErrorString(DataInputStream in) throws IOException {

@@ -37,7 +37,7 @@
         <activity android:name="com.irespond.biometrics.client.IrespondActivity" >
         </activity>
         <activity
-            android:name="com.example.hpvvaccinetracker.ScanPatient"
+            android:name="com.example.hpvvaccinetracker.ScanPatientActivity"
             android:label="@string/title_activity_scan_patient" >
         </activity>
     </application>

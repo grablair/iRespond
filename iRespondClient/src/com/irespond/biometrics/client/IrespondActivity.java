@@ -55,7 +55,6 @@ public class IrespondActivity extends Activity {
 			Toast.makeText(this, "An invalid function was called.", Toast.LENGTH_LONG).show();
 			setResult(RESULT_CANCELED);
 			finish();
-			
 		}
 		
 		thisActivity = this;
@@ -83,142 +82,140 @@ public class IrespondActivity extends Activity {
 					Toast.makeText(thisActivity, devScan.GetErrorMessage(), Toast.LENGTH_LONG).show();
 					return;    			
 				}
-				final byte[] wsqImg = new byte[BiometricInterface.mImageWidth*BiometricInterface.mImageHeight];
+				byte[] wsqImg = new byte[BiometricInterface.mImageWidth*BiometricInterface.mImageHeight];
 				long hDevice = devScan.GetDeviceHandle();
 				ftrWsqAndroidHelper wsqHelper = new ftrWsqAndroidHelper();
 				
 				// byte array created
 				if (wsqHelper.ConvertRawToWsq(hDevice, BiometricInterface.mImageWidth, BiometricInterface.mImageHeight, 2.25f, BiometricInterface.mImageFP, wsqImg)) {
 
-					new Thread() {
-						public void run() {
-							switch(BiometricInterface.mRequest) {
-							case IDENTIFY:
-								// Do identify function.
-								ServerInterface.identify(wsqImg, new ServerCallback<UUID>() {
-									@Override
-									public void onSuccess(UUID result) {
-										if (result != null) {
-											// Success. Set the BiometricInterface identify result field and
-											// return OK to the caller.
-											BiometricInterface.mIdentifyResult = result;
-											setResult(RESULT_OK);
-											finish();
-										} else {
-											// Prompt the user to either try again or enroll as a new user.
-											DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-											    @Override
-											    public void onClick(DialogInterface dialog, int which) {
-											        switch (which){
-											        case DialogInterface.BUTTON_POSITIVE:
-											        	// Try again.
-											        	mButtonScan.setEnabled(true);
-														initScanMode();
-											            break;
-											        case DialogInterface.BUTTON_NEGATIVE:
-											        	// Enroll as new user, start that process.
-											            BiometricInterface.mRequest = RequestType.ENROLL;
-											            BiometricInterface.mEnrollImages = null;
-											            mButtonScan.setEnabled(true);
-														initScanMode();
-														Toast.makeText(thisActivity, "0 / " + ENROLL_IMAGE_COUNT +
-																" images taken for enrollment.", Toast.LENGTH_LONG).show();
-											            break;
-											        }
-											    }
-											};
-		
-											AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
-											builder.setMessage("No match was found. Would you like to try again or enroll this person in the system?")
-												.setPositiveButton("Try again", dialogClickListener)
-											    .setNegativeButton("Enroll", dialogClickListener).show();
-										}
-									}
-		
-									@Override
-									public void onFailure(String errorMessage) {
-										// Error.
-										mButtonScan.setEnabled(true);
-										Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
-										initScanMode();
-									}
-								});
-								break;
-								
-							case VERIFY:
-								// Do verify function.
-								ServerInterface.verify(BiometricInterface.mVerifyUuids, wsqImg, new ServerCallback<Boolean>() {
-									@Override
-									public void onSuccess(Boolean result) {
-										if (result) {
-											// Verification succeeded. Return OK to caller.
-											setResult(RESULT_OK);
-											finish();
-										} else {
-											// Verification failed. Have user try again.
-											mButtonScan.setEnabled(true);
-											Toast.makeText(thisActivity, "Verification unsuccessful. Pleas try again.", Toast.LENGTH_LONG).show();
-											initScanMode();
-										}
-									}
-		
-									@Override
-									public void onFailure(String errorMessage) {
-										// Error.
-										mButtonScan.setEnabled(true);
-										Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
-										initScanMode();
-									}
-								});
-								break;
-							case ENROLL:
-								// Create a new set of images, if necessary.
-								if (BiometricInterface.mEnrollImages == null)
-									BiometricInterface.mEnrollImages = new HashSet<byte[]>();
-									
-								// Add the latest WSQ file to the collection.
-								BiometricInterface.mEnrollImages.add(wsqImg);
-								
-								if (BiometricInterface.mEnrollImages.size() == ENROLL_IMAGE_COUNT) {
-									// We're up to our enrollment count.
-									Collection<byte[]> enrollImages = BiometricInterface.mEnrollImages;
-									BiometricInterface.mEnrollImages = null;
-									
-									ServerInterface.enroll(enrollImages, new ServerCallback<UUID>() {
-										@Override
-										public void onSuccess(UUID result) {
-											// Enrollment succeeded. Set the identify result and respond OK.
-											BiometricInterface.mIdentifyResult = result;
-											setResult(RESULT_OK);
-											finish();
-										}
-		
-										@Override
-										public void onFailure(String errorMessage) {
-											// Error.
-											mButtonScan.setEnabled(true);
-											Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
-											initScanMode();
-										}
-									});
+					switch(BiometricInterface.mRequest) {
+					case IDENTIFY:
+						// Do identify function.
+						ServerInterface.identify(wsqImg, new ServerCallback<UUID>() {
+							@Override
+							public void onSuccess(UUID result) {
+								if (result != null) {
+									// Success. Set the BiometricInterface identify result field and
+									// return OK to the caller.
+									BiometricInterface.mIdentifyResult = result;
+									setResult(RESULT_OK);
+									finish();
 								} else {
-									// We need more enrollment images.
+									// Prompt the user to either try again or enroll as a new user.
+									DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+									    @Override
+									    public void onClick(DialogInterface dialog, int which) {
+									        switch (which){
+									        case DialogInterface.BUTTON_POSITIVE:
+									        	// Try again.
+									        	mButtonScan.setEnabled(true);
+												initScanMode();
+									            break;
+									        case DialogInterface.BUTTON_NEGATIVE:
+									        	// Enroll as new user, start that process.
+									            BiometricInterface.mRequest = RequestType.ENROLL;
+									            BiometricInterface.mEnrollImages = null;
+									            mButtonScan.setEnabled(true);
+												initScanMode();
+												Toast.makeText(thisActivity, "0 / " + ENROLL_IMAGE_COUNT +
+														" images taken for enrollment.", Toast.LENGTH_LONG).show();
+									            break;
+									        }
+									    }
+									};
+
+									AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+									builder.setMessage("No match was found. Would you like to try again or enroll this person in the system?")
+										.setPositiveButton("Try again", dialogClickListener)
+									    .setNegativeButton("Enroll", dialogClickListener).show();
+									
+									
+								}
+							}
+
+							@Override
+							public void onFailure(String errorMessage) {
+								// Error.
+								mButtonScan.setEnabled(true);
+								Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
+								initScanMode();
+							}
+						});
+						break;
+						
+					case VERIFY:
+						// Do verify function.
+						ServerInterface.verify(BiometricInterface.mVerifyUuids, wsqImg, new ServerCallback<Boolean>() {
+							@Override
+							public void onSuccess(Boolean result) {
+								if (result) {
+									// Verification succeeded. Return OK to caller.
+									setResult(RESULT_OK);
+									finish();
+								} else {
+									// Verification failed. Have user try again.
 									mButtonScan.setEnabled(true);
-									Toast.makeText(thisActivity, "" + BiometricInterface.mEnrollImages.size() + " / " + ENROLL_IMAGE_COUNT +
-											" images taken for enrollment.", Toast.LENGTH_LONG).show();
+									Toast.makeText(thisActivity, "Verification unsuccessful. Pleas try again.", Toast.LENGTH_LONG).show();
 									initScanMode();
 								}
-								break;
-							default:
-								// Somehow the RequestType was set to null or some invalid value. Return failure.
-								Toast.makeText(thisActivity, "An invalid function was called.", Toast.LENGTH_LONG).show();
-								setResult(RESULT_CANCELED);
-								finish();
-								break;
 							}
+
+							@Override
+							public void onFailure(String errorMessage) {
+								// Error.
+								mButtonScan.setEnabled(true);
+								Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
+								initScanMode();
+							}
+						});
+						break;
+					case ENROLL:
+						// Create a new set of images, if necessary.
+						if (BiometricInterface.mEnrollImages == null)
+							BiometricInterface.mEnrollImages = new HashSet<byte[]>();
 							
+						// Add the latest WSQ file to the collection.
+						BiometricInterface.mEnrollImages.add(wsqImg);
+						
+						if (BiometricInterface.mEnrollImages.size() == ENROLL_IMAGE_COUNT) {
+							// We're up to our enrollment count.
+							Collection<byte[]> enrollImages = BiometricInterface.mEnrollImages;
+							BiometricInterface.mEnrollImages = null;
+							
+							ServerInterface.enroll(enrollImages, new ServerCallback<UUID>() {
+								@Override
+								public void onSuccess(UUID result) {
+									// Enrollment succeeded. Set the identify result and respond OK.
+									BiometricInterface.mIdentifyResult = result;
+									setResult(RESULT_OK);
+									finish();
+								}
+
+								@Override
+								public void onFailure(String errorMessage) {
+									// Error.
+									mButtonScan.setEnabled(true);
+									Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
+									initScanMode();
+								}
+							});
+						} else {
+							// We need more enrollment images.
+							mButtonScan.setEnabled(true);
+							Toast.makeText(thisActivity, "" + BiometricInterface.mEnrollImages.size() + " / " + ENROLL_IMAGE_COUNT +
+									" images taken for enrollment.", Toast.LENGTH_LONG).show();
+							initScanMode();
 						}
-					}.run();
+						break;
+					default:
+						// Somehow the RequestType was set to null or some invalid value. Return failure.
+						Toast.makeText(thisActivity, "An invalid function was called.", Toast.LENGTH_LONG).show();
+						setResult(RESULT_CANCELED);
+						finish();
+						break;
+					}
+					
 				}
 			}
 		});
@@ -267,7 +264,7 @@ public class IrespondActivity extends Activity {
 		usb_host_ctx.CloseDevice();
 		if(usb_host_ctx.OpenDevice(0, true)) {
 			if(StartScan()) {
-				Toast.makeText(thisActivity, "Place finger on scanner.", Toast.LENGTH_LONG).show();
+				//Toast.makeText(thisActivity, "Place finger on scanner.", Toast.LENGTH_LONG).show();
 			}	
 		} else {
 			if(!usb_host_ctx.IsPendingOpen()) {

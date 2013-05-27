@@ -96,9 +96,15 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
   
   try {
     if (header == HEADER_WSQ_IDENTIFY) {
+      cout << "IDENTIFY" << endl;
+      
       // Get WSQ file size.
       int32_t wsqSize;
       receive(ist->client, &wsqSize, 4);
+      
+      wsqSize = ntohl(wsqSize);
+      
+      cout << wsqSize << endl;
       
       // Get WSQ file bytes.
       char wsqData[wsqSize];
@@ -108,6 +114,8 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       struct xytq_struct fingerTemplate;
       ProcessWSQTransfer(fingerTemplate, wsqSize, wsqData);
       
+      cout << "Processed." << endl;
+      
       // Quality is good, shrink down to a template.
       template_t *probe = bz_prune(&fingerTemplate, 0);
       
@@ -115,7 +123,12 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       if (ist->database->identify(probe, matchUuid)) {
         // Send identify success packet.
         ist->client->send(&HEADER_IDENTIFY_SUCCESS, 1);
-        ist->client->send(matchUuid.data, 16);
+        
+        uint64_t *uuidLong = (uint64_t *) matchUuid.data;
+        uint64_t mostSig = uuidLong[0];
+        uint64_t leastSig = uuidLong[1];
+        ist->client->send(&mostSig, 8);
+        ist->client->send(&leastSig, 8);
       } else {
         // Send identify failure packet.
         ist->client->send(&HEADER_IDENTIFY_FAILURE, 1);
@@ -125,16 +138,26 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       int32_t numUuids;
       receive(ist->client, &numUuids, 4);
       
+      numUuids = ntohl(numUuids);
+      
       std::set<uuid> verifyUuids;
       for (int32_t i = 0; i < numUuids; i++) {
         uuid verifyUuid;
-        receive(ist->client, verifyUuid.data, 16);
+        uint64_t mostSig, leastSig;
+        uint64_t *uuidLong = (uint64_t *) verifyUuid.data;
+        receive(ist->client, &mostSig, 8);
+        uuidLong[0] = mostSig;
+        receive(ist->client, &leastSig, 8);
+        uuidLong[1] = leastSig;
+
         verifyUuids.insert(verifyUuid);
       }
       
       // Get WSQ file size.
       int32_t wsqSize;
       receive(ist->client, &wsqSize, 4);
+      
+      wsqSize = ntohl(wsqSize);
       
       // Get WSQ file bytes.
       char wsqData[wsqSize];
@@ -156,6 +179,8 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       int32_t numImages;
       receive(ist->client, &numImages, 4);
       
+      numImages = ntohl(numImages);
+      
       // Get best template out of images.
       struct xytq_struct bestTemplate;
       bestTemplate.nrows = 0;
@@ -163,6 +188,8 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
         // Get WSQ file size.
         int32_t wsqSize;
         receive(ist->client, &wsqSize, 4);
+        
+        wsqSize = ntohl(wsqSize);
         
         // Get WSQ file bytes.
         char wsqData[wsqSize];
@@ -194,15 +221,19 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       uuid uuid = ist->database->enroll(temp);
       
       ist->client->send(&HEADER_ENROLL_SUCCESS, 1);
-      ist->client->send(uuid.data, 16);
+      uint64_t *uuidLong = (uint64_t *) uuid.data;
+      uint64_t mostSig = uuidLong[0];
+      uint64_t leastSig = uuidLong[1];
+      ist->client->send(&mostSig, 8);
+      ist->client->send(&leastSig, 8);
     } else {
       throw "Invalid header.";
     }
   } catch (char const *errorMessage) {
-    //cout << "Error: " << errorMessage << endl << endl;
-    //cout << "=================================" << endl << endl;
+    cout << "Error: " << errorMessage << endl << endl;
+    cout << "=================================" << endl << endl;
     
-    int32_t errLen = strlen(errorMessage);
+    int32_t errLen = htonl(strlen(errorMessage));
     
     try {
       ist->client->send(&HEADER_ERROR, 1);
