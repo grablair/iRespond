@@ -108,6 +108,64 @@
 		android:padding="10dp" 
         />
 
+    <RadioGroup
+        android:id="@+id/radioSex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+ 
+        <RadioButton
+            android:id="@+id/radioAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Age" 
+            android:checked="true" />
+ 
+        <RadioButton
+            android:id="@+id/radioDOB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date of Birth?" />
+ 
+    </RadioGroup>
+    
+    <RelativeLayout
+        android:id="@+id/ageInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        
+        <EditText
+            android:id="@+id/age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="..." />
+        
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="yrs"/>
+        
+        <CheckBox
+            android:id="@+id/ageestimated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estimated" />
+        
+        <CheckBox
+            android:id="@+id/agereported"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:layout_below="@id/ageestimated"
+            android:text="Reported" />
+        
+    </RelativeLayout>
+    
+    <DatePicker 
+        android:id="@+id/dateOfBirth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -122,6 +180,10 @@
             android:text="Done"
             android:textSize="36sp" />
 
+
     </RelativeLayout>
+    
+  
+ 
 
 </LinearLayout>

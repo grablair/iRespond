@@ -45,6 +45,14 @@
             android:name="com.irespond.hpvvaccinetracker.RecordFoundActivity"
             android:label="@string/title_activity_record_found" >
         </activity>
+        <activity
+            android:name="com.example.hpvvaccinetracker.MainActivity"
+            android:label="@string/title_activity_main" >
+        </activity>
+        <activity
+            android:name="com.irespond.hpvvaccinetracker.EnrollmentActivity"
+            android:label="@string/title_activity_enrollment" >
+        </activity>
     </application>
 
 </manifest>

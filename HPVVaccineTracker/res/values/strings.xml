@@ -8,7 +8,10 @@
     <string name="login_button_provider_login">Login</string>
     <string name="header_color">#EEEEEE</string>
     <string name="header_size">36sp</string>
+    <string name="return_date">DD / MM / YYYY</string>
     <string name="title_activity_scan_patient">ScanPatient</string>
     <string name="title_activity_record_found">RecordFoundActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_enrollment">EnrollmentActivity</string>
 
 </resources>
