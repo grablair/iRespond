@@ -11,8 +11,6 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import org.irespond.iris.database.Database;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -373,9 +371,6 @@ public class FtrScanDemoUsbHostActivity extends Activity {
         for (int i = 0; i < mImageWidth * mImageHeight; i++) {
         	image2d[i / mImageWidth][i % mImageWidth] = mImageFP[i];
         }
-        int userId = Database.getInstance().enrollIfNew(image2d);
-        
-        mMessage.setText("" + userId);
     }        
 
     
