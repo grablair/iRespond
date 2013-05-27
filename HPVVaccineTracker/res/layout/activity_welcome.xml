@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+    
     <LinearLayout
         android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -15,27 +15,11 @@
 	    <TextView 
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="Reason for Not Enrolling"
+			android:text="Enrollment"
 			android:textSize="@string/header_size"
 			android:gravity="center"
 			/>
-
+	    
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/yNoEnroll"
-        android:layout_width="match_parent"
-		android:layout_height="300dp"
-		android:layout_margin="100dp"
-        />
-
-    <Button
-        android:id="@+id/enrollInfoDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:hint="Done"
-        android:padding="20dp"
-        android:textSize="36sp" />"
 
 </LinearLayout>

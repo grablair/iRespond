@@ -6,4 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_provider_login">ProviderLogin</string>
 
+    <string name="header_color">#EEEEEE</string>
+    <string name="header_size">36sp</string>
+    
 </resources>

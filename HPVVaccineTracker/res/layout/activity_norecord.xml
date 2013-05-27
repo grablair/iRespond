@@ -1,39 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <LinearLayout
+	<LinearLayout
+	    android:id="@+id/header"
         android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 	    android:orientation="vertical"
-	    android:background="#EEEEEE"
+	    android:background="@string/header_color"
 	    android:paddingTop="10dp"
 	    android:paddingBottom="10dp" >
         
-	    <TextView 
+	    <TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="No Record Found"
-			android:textSize="36sp"
+			android:textSize="@string/header_size"
 			android:gravity="center"
 			/>
-    
+
     </LinearLayout>
     
 	<Button
-	    android:id="@+id/enrollButton"
+	    android:id="@+id/enroll"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:text="Enroll as New Patient" />
-	    
-	 <Button
-	     android:id="@+id/rescanButton"
-	     android:layout_width="wrap_content"
-	     android:layout_height="wrap_content"
-	     android:layout_gravity="center"
-	     android:text="Re-Scan" />
-    	
-</LinearLayout>
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/header"
+	    android:text="Enroll as New Patient"
+	    />
+    
+	<Button
+	    android:id="@+id/rescan"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/enroll"
+	    android:text="Re-Scan"
+	    />
+	
+	<Button
+	    android:id="@+id/rescan"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_alignParentBottom="true"
+	    android:text="Don't Enroll"
+	    />
+</RelativeLayout>
