@@ -45,10 +45,10 @@ public class EnrollmentActivity extends Activity {
 	private static RadioButton mAgeEstimated;
 	private static RadioButton mAgeReported;
 	private static RadioButton mAgeChoice;
-	private static RadioButton mDobChoice;
+//	private static RadioButton mDobChoice;
 	
 	private static RadioGroup mAgeOrDob;
-	private static RadioGroup mAgeEstimatedOrReported;
+//	private static RadioGroup mAgeEstimatedOrReported;
 	
 	private static Button mSubmitButton;
 	
@@ -78,10 +78,10 @@ public class EnrollmentActivity extends Activity {
 		mAgeEstimated = (RadioButton) findViewById(R.id.ageestimated);
 		mAgeReported = (RadioButton) findViewById(R.id.agereported);
 		mAgeChoice = (RadioButton) findViewById(R.id.radioAge);
-		mDobChoice = (RadioButton) findViewById(R.id.radioDOB);
+//		mDobChoice = (RadioButton) findViewById(R.id.radioDOB);
 		
 		mAgeOrDob = (RadioGroup) findViewById(R.id.radioSex);
-		mAgeEstimatedOrReported = (RadioGroup) findViewById(R.id.ageEstimatedOrReported);
+//		mAgeEstimatedOrReported = (RadioGroup) findViewById(R.id.ageEstimatedOrReported);
 		
 		mSubmitButton = (Button) findViewById(R.id.enrollInfoDone);
 		
