@@ -13,15 +13,15 @@
         android:paddingTop="20dp" >
 
         <TextView
-            android:id="@+id/doseTitle"
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/first_dose_text"
+            android:text="@string/title_activity_series_complete"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#CEEBEC"
-            android:textSize="65sp" />
+            android:textSize="60sp" />
     </LinearLayout>
 
     <View
@@ -32,28 +32,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.08" >
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="450dp"
-            android:layout_height="450dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="110dp"
-            android:src="@drawable/needle_icon" />
+        android:layout_height="0dp"
+        android:layout_weight="1.10" >
 
         <Button
-            android:id="@+id/doseDone"
+            android:id="@+id/completeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="152dp"
+            android:layout_centerVertical="true"
             android:padding="25dp"
-            android:text="@string/dose_done"
-            android:textSize="80sp" />
+            android:text="@string/series_done"
+            android:textSize="100sp" />
 
     </RelativeLayout>
 

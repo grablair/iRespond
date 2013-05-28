@@ -33,9 +33,13 @@
     <string name="first_dose_text">Give First Dose</string>
     <string name="second_dose_text">Give Second Dose</string>
     <string name="third_dose_text">Give Third Dose</string>
-    <string name="dose_done">Done</string>
+    <string name="dose_done">Dose Given</string>
     <string name="no_dose_title">No Dose Today!</string>
-    <string name="wrong_date">Today is the\nWrong Date</string>
-    <string name="patient_must_return">Patient must return on:</string>
+    <string name="wrong_date_desc">Today is the\nWrong Date\n\nPatient must return on:\n\n{0}</string>
+    <string name="patient_must_return">Patient must return on:\n\n{0}</string>
+    <string name="title_activity_series_complete">Vaccination\nSeries Complete</string>
+    <string name="series_done">Done</string>
+    <string name="title_activity_return_date">Return Date</string>
+    <string name="next_dose_desc">Return On:\n\n{0}\n\nFor Next Dose.</string>
 
 </resources>

@@ -23,6 +23,12 @@
             android:textSize="75sp" />
     </LinearLayout>
 
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="#ACC9CA" />
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
@@ -60,7 +66,7 @@
             android:textSize="50sp" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tooEarlyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/rescanButton"
