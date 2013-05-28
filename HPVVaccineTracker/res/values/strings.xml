@@ -7,7 +7,7 @@
     <string name="title_activity_provider_login">Provider Login</string>
     <string name="login_button_provider_login">Login</string>
     <string name="return_date">DD / MM / YYYY</string>
-    <string name="title_activity_scan_patient">ScanPatient</string>
+    <string name="title_activity_scan_patient">Scan Patient</string>
     <string name="title_activity_record_found">RecordFoundActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_enrollment">EnrollmentActivity</string>
@@ -17,5 +17,29 @@
     <string name="api_date_format">yyyy-MM-dd</string>
     <string name="api_datetime_format">yyyy-MM-dd HH:mm:ss</string>
     <string name="clinician_login_note">In order to proceed, a clinician must biometrically log in. Click the button below to start this process.</string>
+    <string name="patient_scan_note">Prepare the patient for identification. Ensure their finger is properly cleaned. Initiate the scan when you are ready.</string>
+    <string name="login_button_scan_patient">Initiate Scan</string>
+    <string name="fingerprint_logo_desc">Fingerprint Logo</string>
+    <string name="title_activity_patient_found">Record Found</string>
+    <string name="title_activity_patient_not_found">No Record</string>
+    <string name="correct_patient_question">Correct Patient?</string>
+    <string name="positive_button">Yes</string>
+    <string name="negative_button">No</string>
+    <string name="patient_image_desc">Patient Image</string>
+    <string name="enroll_as_new_button">Enroll as New\nPatient</string>
+    <string name="rescan_button">Re-Scan</string>
+    <string name="dont_enroll_button">Don\'t Enroll</string>
+    <string name="no_record_desc">No record of HPV vaccinations were found for this patient. Consider the following:\n\n1. If you believe this to be a new patient, press the \&quot;Enroll as New Patient\&quot; button.\n\n2. If you believe this to be a mistake, press the \&quot;Re-Scan\&quot; button and try again.\n\n3. If you do not wish to enroll due to multiple failures or some other reason, press the \&quot;Don\'t Enroll\&quot; button.</string>
+    <string name="first_dose_text">Give First Dose</string>
+    <string name="second_dose_text">Give Second Dose</string>
+    <string name="third_dose_text">Give Third Dose</string>
+    <string name="dose_done">Dose Given</string>
+    <string name="no_dose_title">No Dose Today!</string>
+    <string name="wrong_date_desc">Today is the\nWrong Date\n\nPatient must return on:\n\n{0}</string>
+    <string name="patient_must_return">Patient must return on:\n\n{0}</string>
+    <string name="title_activity_series_complete">Vaccination\nSeries Complete</string>
+    <string name="series_done">Done</string>
+    <string name="title_activity_return_date">Return Date</string>
+    <string name="next_dose_desc">Return On:\n\n{0}\n\nFor Next Dose.</string>
 
 </resources>

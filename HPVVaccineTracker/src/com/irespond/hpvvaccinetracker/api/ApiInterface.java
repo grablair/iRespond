@@ -7,6 +7,8 @@ import java.util.UUID;
 import java.net.SocketTimeoutException;
 
 
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.params.ClientPNames;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,6 +70,7 @@ public class ApiInterface {
 		client = new AsyncHttpClient();
 		client.setTimeout(10000);
 		client.setCookieStore(cookieStore);
+		client.getHttpClient().getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true); 
 
 		// Need to specify that we want JSON back from the server.
 		client.addHeader("Accept", "application/json");
@@ -88,7 +91,7 @@ public class ApiInterface {
 		
 		params.put("id", uuid.toString());
 
-		client.post(providersUrl + "/create", params, new JsonHttpResponseHandler() {
+		client.get(providersUrl + "/create", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				callback.onSuccess(null);
@@ -114,7 +117,7 @@ public class ApiInterface {
 		if (failOnNoInternet(callback))
 			return;
 		
-		client.post(providersUrl + "/index", new JsonHttpResponseHandler() {
+		client.get(providersUrl + "/index", new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONArray providersJson) {
 				Set<UUID> result = new HashSet<UUID>();
@@ -161,7 +164,7 @@ public class ApiInterface {
 		
 		params.put("id", uuid.toString());
 
-		client.post(providersUrl + "/destroy", params, new JsonHttpResponseHandler() {
+		client.get(providersUrl + "/destroy", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				try {
@@ -199,8 +202,10 @@ public class ApiInterface {
 		RequestParams params = new RequestParams();
 		
 		p.fillParams(params);
+		
+		Log.d(TAG, "Calling " + patientsUrl + "/create with the following args: " + params);
 
-		client.post(patientsUrl + "/create", params, new JsonHttpResponseHandler() {
+		client.get(patientsUrl + "/create", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				try {
@@ -237,7 +242,7 @@ public class ApiInterface {
 		
 		p.fillParams(params);
 
-		client.post(patientsUrl + "/update", params, new JsonHttpResponseHandler() {
+		client.get(patientsUrl + "/update", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				try {
@@ -274,7 +279,7 @@ public class ApiInterface {
 		
 		params.put("id", p.id.toString());
 
-		client.post(patientsUrl + "/destroy", params, new JsonHttpResponseHandler() {
+		client.get(patientsUrl + "/destroy", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				try {
@@ -312,10 +317,13 @@ public class ApiInterface {
 		RequestParams params = new RequestParams();
 		
 		params.put("id", id.toString());
+		
+		Log.d(TAG, "In fetchPatient for " + id);
 
-		client.post(patientsUrl + "/show", params, new JsonHttpResponseHandler() {
+		client.get(patientsUrl + "/show", params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(JSONObject obj) {
+				Log.d(TAG, "In onSuccess of fetchPatient");
 				try {
 					callback.onSuccess(new Patient(obj));
 				} catch (JSONException e) {
@@ -334,6 +342,12 @@ public class ApiInterface {
 			public void onFailure(Throwable e, String message) {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
+				} else if (e instanceof HttpResponseException) {
+					HttpResponseException he = (HttpResponseException) e;
+					if (he.getStatusCode() == 404)
+						callback.onSuccess(null);
+					else
+						callback.onFailure(he.getMessage());
 				} else {
 					callback.onFailure("FAILURE");
 				}
