@@ -1,129 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
     <LinearLayout
+        android:id="@+id/enroll_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#EEEEEE"
-        android:orientation="vertical"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp" >
+		android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:background="#666666"
+	    android:paddingTop="10dp"
+	    android:paddingBottom="10dp" >
         
-	    <TextView
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="center"
-	        android:text="Enrollment"
-	        android:textSize="36sp" />
+	    <TextView 
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="Enrollment"
+			android:textSize="52sp"
+			android:textColor="#CEEBEC"
+			android:gravity="center"
+			/>
     
 	    <TextView
 	        android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:text="SID"
-			android:textSize="14sp"
+			android:textSize="20sp"
+			android:textColor="#CEEBEC"
 			android:gravity="center"
 	        />
     </LinearLayout>
     
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"  >
-      
-        <EditText
-            android:id="@+id/familyname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Family name..."
-            />
+	<EditText
+	    android:id="@+id/familyname"
+	    android:layout_width="300dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/enroll_header"
+	    android:layout_marginLeft="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+	    android:hint="Family name..."
+	    />
         
-        <EditText
-            android:id="@+id/givenname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Given name..."
-            />            
-    </LinearLayout>
+	<EditText
+	    android:id="@+id/givenname"
+	    android:layout_width="300dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/enroll_header"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginRight="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+	    android:hint="Given name..."
+	    />            
     
-    <LinearLayout
-        android:layout_width="wrap_content"
+	
+	<EditText
+	    android:id="@+id/mothername"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"  >
-      
-        <EditText
-            android:id="@+id/mothername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Mother's name..."
-            />
+        android:layout_marginLeft="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+        android:hint="Mother's name..."
+	    android:layout_below="@id/familyname"
+	    />
         
-        <EditText
-            android:id="@+id/fathername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Father's name..."
-            />            
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="wrap_content"
+	<EditText
+	    android:id="@+id/fathername"
+	    android:layout_width="300dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/givenname"
+		android:layout_alignParentRight="true"
+	    android:layout_marginRight="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+	    android:hint="Father's name..."
+	    />        
+
+  
+	<EditText
+	    android:id="@+id/phone"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"  >
-      
-        <EditText
-            android:id="@+id/phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Phone number..."
-            />
-        
-        <CheckBox
-            android:id="@+id/sms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SMS Reminders?"
+        android:layout_marginLeft="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+        android:hint="Phone number..."
+	    android:layout_below="@id/mothername"
+	    />
+	
+    <CheckBox
+        android:id="@+id/sms"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/fathername"
+		android:layout_alignParentRight="true"
+	    android:layout_marginRight="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+	   	android:text="SMS Reminders?"
             />            
-    </LinearLayout>
     
-    <EditText 
-        android:id="@+id/address"
-        android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:hint="Address..."
-		android:padding="10dp" 
-        />
-    
-    <EditText 
-        android:id="@+id/location"
-        android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:hint="Village, town, neighborhood, etc..."
-		android:padding="10dp" 
-        />
+    <EditText
+	    android:id="@+id/address"
+        android:layout_width="700dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+        android:hint="Address..."
+	    android:layout_below="@id/phone"
+	    />
+
+    <EditText
+	    android:id="@+id/location"
+        android:layout_width="700dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+        android:hint="Village, town, neighborhood, etc..."
+	    android:layout_below="@id/address"
+	    />
+
 
     <RadioGroup
         android:id="@+id/radioSex"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@id/location" >
  
         <RadioButton
             android:id="@+id/radioAge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
             android:text="Age" 
-            android:checked="true" />
+            android:textSize="32sp" />
  
+        <View
+		    android:layout_width="375dp"
+		    android:layout_height="1dp"
+		    android:layout_marginTop="75dp"
+		    android:background="#008DA9"/>
+        
         <RadioButton
             android:id="@+id/radioDOB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date of Birth?" />
+            android:layout_marginTop="60dp"
+            android:textSize="32sp"
+            android:text="Date of \nBirth?" />
  
     </RadioGroup>
     
@@ -131,39 +162,99 @@
         android:id="@+id/ageInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:layout_below="@id/location"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="175dp"
+        android:orientation="horizontal" >
         
         <EditText
             android:id="@+id/age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="..." />
+            android:text="..." 
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/radioAge"
+        	android:layout_below="@id/location" />
         
         <TextView 
+            android:id="@+id/yrs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="yrs"/>
+            android:text="yrs"
+            android:textSize="20sp"
+            android:layout_alignBottom="@id/age"
+            android:layout_toRightOf="@id/age"/>
         
         <CheckBox
             android:id="@+id/ageestimated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Estimated" />
+            android:layout_toRightOf="@id/yrs"
+            android:text="Estimated"
+            android:textSize="20sp" />
         
         <CheckBox
             android:id="@+id/agereported"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 			android:layout_below="@id/ageestimated"
-            android:text="Reported" />
+			android:layout_toRightOf="@id/yrs"
+            android:text="Reported"
+            android:textSize="20sp" />
         
     </RelativeLayout>
     
-    <DatePicker 
-        android:id="@+id/dateOfBirth"
+	<RelativeLayout
+        android:id="@+id/dobInfo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ageInfo"
+        android:layout_marginTop="125dp"
+        android:layout_marginLeft="225dp"
+        android:orientation="horizontal" >
+        
+        <EditText
+            android:id="@+id/dob_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DD" 
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/radioDOB"
+        	android:layout_below="@id/age" />
+        
+        <EditText
+            android:id="@+id/dob_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MM" 
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/dob_day"
+        	android:layout_below="@id/age" />
+        
+        <EditText
+            android:id="@+id/dob_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="YYYY" 
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/dob_month"
+        	android:layout_below="@id/age"  />
+        
+    </RelativeLayout>
+    
+    <EditText
+	    android:id="@+id/enrollnotes"
+	    android:layout_width="300dp"
+	    android:layout_height="300dp"
+		android:inputType="textMultiLine"	    
+		android:layout_below="@id/location"
+		android:layout_alignParentRight="true"
+	    android:layout_marginRight="50dp"
+	    android:textSize="32sp"
+	    android:layout_marginTop="50dp"
+	    android:gravity="top"
+	    android:hint="Notes..."
+	    />  
     
     <RelativeLayout
         android:layout_width="match_parent"
@@ -182,7 +273,4 @@
 
     </RelativeLayout>
     
-  
- 
-
-</LinearLayout>
+</RelativeLayout>
