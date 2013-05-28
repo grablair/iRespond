@@ -1,107 +1,83 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:orientation="vertical"
     tools:context=".ScanPatientActivity" >
 
-    <RelativeLayout
-        android:id="@+id/scanPatientUI"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:background="#666666"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" >
 
-	    <LinearLayout
-	        android:id="@+id/headerScanPatient1"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="#EEEEEE"
-	        android:orientation="vertical"
-	        android:paddingBottom="10dp"
-	        android:paddingTop="10dp" >
+        <TextView
+            android:id="@+id/providerLoginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/title_activity_scan_patient"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#CEEBEC"
+            android:textSize="52sp" />
 
-		    <TextView
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center"
-		        android:text="Scan Patient&apos;s Finger"
-		        android:textSize="36sp" />
-	
-	    </LinearLayout>
+    </LinearLayout>
 
-	    <RelativeLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" >
-
-	        <Button
-	            android:id="@+id/patientScanButton"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentBottom="true"
-	            android:layout_centerHorizontal="true"
-	            android:layout_marginBottom="37dp"
-	            android:text="@string/login_button_provider_login"
-	            android:textSize="28sp" />
-
-	    </RelativeLayout>
-	</RelativeLayout>
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="#ACC9CA" />
 
     <RelativeLayout
-        android:id="@+id/recordFoundUI"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
 
-	    <LinearLayout
-	        android:id="@+id/headerScanPatient2"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="#EEEEEE"
-	        android:orientation="vertical"
-	        android:paddingBottom="10dp"
-	        android:paddingTop="10dp" >
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-		    <TextView
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center"
-		        android:text="Record Found"
-		        android:textSize="36sp" />
+            <ImageView
+                android:id="@+id/fingerprintLogo2"
+                android:layout_width="fill_parent"
+                android:layout_height="730dp"
+                android:contentDescription="@string/fingerprint_logo_desc"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:paddingBottom="50dp"
+                android:paddingTop="50dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/fingerprint" />
 
-	   </LinearLayout>
+            <TextView
+                android:id="@+id/scanPatientInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:layout_marginRight="55dp"
+                android:gravity="center"
+                android:text="@string/patient_scan_note"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="35sp" />
+        </LinearLayout>
 
-	    <RelativeLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" >
+        <Button
+            android:id="@+id/scanPatientButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:text="@string/login_button_scan_patient"
+            android:textSize="55sp" />
+    </RelativeLayout>
 
-	        <TextView
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:gravity="center"
-	            android:text="Correct Patient?"
-	            android:textSize="36sp" />
-
-	        <LinearLayout
-		        android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-			    android:orientation="horizontal"
-			    android:layout_centerHorizontal="true"
-			    android:layout_alignParentBottom="true" >
-
-		        <Button
-		            android:id="@+id/patientConfirmedButton"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="37dp"
-		            android:text="Yes"
-		            android:textSize="36sp" />
-
-		        <Button
-		            android:id="@+id/patientNotConfirmedButton"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="37dp"
-		            android:text="No"
-		            android:textSize="36sp" />
-		    </LinearLayout>
-		</RelativeLayout>
-	</RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

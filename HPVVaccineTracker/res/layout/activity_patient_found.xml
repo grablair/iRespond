@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#666666"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" >
+
+        <TextView
+            android:id="@+id/patientFoundTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/title_activity_patient_found"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#CEEBEC"
+            android:textSize="52sp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="#ACC9CA" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp" >
+
+        <ImageView
+            android:id="@+id/patientFoundImage"
+            android:layout_width="fill_parent"
+            android:layout_height="750dp"
+            android:contentDescription="@string/patient_image_desc"
+            android:src="@drawable/noimagefound"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/doseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/patientFoundImage"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="7dp"
+            android:text="@string/correct_patient_question"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="52sp" />
+
+        <ProgressBar
+            android:id="@+id/patientImageProgress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/patientFoundImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="214dp"
+            android:minHeight="300dp"
+            android:minWidth="300dp" />
+
+        <Button
+            android:id="@+id/patientFoundDenyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/doseTitle"
+            android:layout_marginTop="41dp"
+            android:layout_toRightOf="@+id/patientImageProgress"
+            android:text="@string/negative_button"
+            android:textSize="75sp" />
+
+        <Button
+            android:id="@+id/patientFoundConfirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/patientFoundDenyButton"
+            android:layout_alignBottom="@+id/patientFoundDenyButton"
+            android:layout_toLeftOf="@+id/patientImageProgress"
+            android:text="@string/positive_button"
+            android:textSize="75sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

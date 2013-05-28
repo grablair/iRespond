@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#666666"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" >
+
+        <TextView
+            android:id="@+id/doseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/title_activity_patient_not_found"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#CEEBEC"
+            android:textSize="75sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="#ACC9CA" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/rescanButton"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="35dp"
+            android:layout_marginLeft="53dp"
+            android:text="@string/rescan_button"
+            android:textSize="50sp" />
+
+        <Button
+            android:id="@+id/enrollNewPatientButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/rescanButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="61dp"
+            android:padding="20dp"
+            android:text="@string/enroll_as_new_button"
+            android:textSize="60sp" />
+
+        <Button
+            android:id="@+id/dontEnrollButton"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/enrollNewPatientButton"
+            android:layout_marginRight="53dp"
+            android:text="@string/dont_enroll_button"
+            android:textSize="50sp" />
+
+        <TextView
+            android:id="@+id/tooEarlyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/rescanButton"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/dontEnrollButton"
+            android:layout_marginTop="47dp"
+            android:text="@string/no_record_desc"
+            android:textSize="37sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

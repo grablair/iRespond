@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#666666"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" >
+
+        <TextView
+            android:id="@+id/doseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/first_dose_text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#CEEBEC"
+            android:textSize="65sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="#ACC9CA" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.08" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="450dp"
+            android:layout_height="450dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="110dp"
+            android:src="@drawable/needle_icon" />
+
+        <Button
+            android:id="@+id/doseDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="152dp"
+            android:padding="25dp"
+            android:text="@string/dose_done"
+            android:textSize="80sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

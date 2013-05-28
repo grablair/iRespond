@@ -58,9 +58,9 @@ public class IrespondActivity extends Activity {
 		}
 		
 		thisActivity = this;
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_irespond);
 
-		mButtonScan = (Button) findViewById(R.id.scanButton);
+		mButtonScan = (Button) findViewById(R.id.scanbtn);
 		mFingerImage = (ImageView) findViewById(R.id.fingerImage);
 		mProgressBar = (ProgressBar) findViewById(R.id.loadingBar);
 
