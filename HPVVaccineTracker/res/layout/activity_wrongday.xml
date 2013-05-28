@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@string/header_color"
+        android:background="#EEEEEE"
         android:orientation="vertical"
         android:paddingBottom="10dp"
         android:paddingTop="10dp" >
@@ -20,33 +20,33 @@
             android:layout_gravity="center"
             android:text="No Dose Today!"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@string/header_size" />
+            android:textSize="32sp" />
 
     </LinearLayout>
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Today is Wrong Date"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@string/header_size" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Today is Wrong Date"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="32sp" />
     
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Patient must return on:"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@string/header_size" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Patient must return on:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="28sp" />
     
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/return_date"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@string/header_size" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/return_date"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="26sp" />
     
     <RelativeLayout
         android:layout_width="match_parent"

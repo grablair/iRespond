@@ -11,12 +11,13 @@
     <uses-permission android:name="android.permission.USB_PERMISSION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" android:name="com.irespond.hpvvaccinetracker.HPVVaccineTrackerApp">
         <activity
             android:name="com.irespond.hpvvaccinetracker.ProviderLoginActivity"
             android:label="@string/app_name" >

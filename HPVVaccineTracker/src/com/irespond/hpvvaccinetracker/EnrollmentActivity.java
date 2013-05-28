@@ -9,7 +9,7 @@ import android.app.Activity;
 import android.view.Menu;
 
 public class EnrollmentActivity extends Activity {
-	private 
+	//private 
 	
 	
 	@Override
@@ -17,12 +17,12 @@ public class EnrollmentActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_enrollinfo);
 		
-		mRadioGroup1 = (RadioGroup) findViewById(R.id.runandpass);
-        mRadio1 = (RadioButton) findViewById(R.id.radiobuttonrun);
-        mRadio2 = (RadioButton) findViewById(R.id.radiobuttonpass);
-        mcheckBoxcmpltpass= (RadioButton) findViewById(R.id.checkBoxcmpltpass);
-        /*RadioGroup?OnCheckedChangeListener???*/
-        mRadioGroup1.setOnCheckedChangeListener(mChangeRadio);
+//		mRadioGroup1 = (RadioGroup) findViewById(R.id.runandpass);
+//        mRadio1 = (RadioButton) findViewById(R.id.radiobuttonrun);
+//        mRadio2 = (RadioButton) findViewById(R.id.radiobuttonpass);
+//        mcheckBoxcmpltpass= (RadioButton) findViewById(R.id.checkBoxcmpltpass);
+//        /*RadioGroup?OnCheckedChangeListener???*/
+//        mRadioGroup1.setOnCheckedChangeListener(mChangeRadio);
 	}
 
 	@Override

@@ -6,12 +6,16 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_provider_login">Provider Login</string>
     <string name="login_button_provider_login">Login</string>
-    <string name="header_color">#EEEEEE</string>
-    <string name="header_size">36sp</string>
     <string name="return_date">DD / MM / YYYY</string>
     <string name="title_activity_scan_patient">ScanPatient</string>
     <string name="title_activity_record_found">RecordFoundActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_enrollment">EnrollmentActivity</string>
+    <string name="base_url">https://hpv-vaccine-tracker.heroku.com/</string>
+    <string name="providers">provider</string>
+    <string name="patients">patient</string>
+    <string name="api_date_format">yyyy-MM-dd</string>
+    <string name="api_datetime_format">yyyy-MM-dd HH:mm:ss</string>
+    <string name="clinician_login_note">In order to proceed, a clinician must biometrically log in. Click the button below to start this process.</string>
 
 </resources>

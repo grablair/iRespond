@@ -5,21 +5,20 @@
     android:orientation="vertical" >
     
 	<LinearLayout
-	    android:id="@+id/header"
-        android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+	    android:id="@+id/headerScanPatient2"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#EEEEEE"
 	    android:orientation="vertical"
-	    android:background="@string/header_color"
-	    android:paddingTop="10dp"
-	    android:paddingBottom="10dp" >
+	    android:paddingBottom="10dp"
+	    android:paddingTop="10dp" >
         
 	    <TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="No Record Found"
-			android:textSize="@string/header_size"
-			android:gravity="center"
-			/>
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:text="No Record Found"
+	        android:textSize="36sp" />
 
     </LinearLayout>
     
@@ -28,7 +27,7 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_centerHorizontal="true"
-	    android:layout_below="@id/header"
+	    android:layout_below="@id/headerScanPatient2"
 	    android:text="Enroll as New Patient"
 	    />
     

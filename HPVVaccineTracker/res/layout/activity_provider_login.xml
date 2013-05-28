@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@string/header_color"
+        android:background="#EEEEEE"
         android:orientation="vertical"
         android:paddingBottom="10dp"
         android:paddingTop="10dp" >
@@ -21,7 +21,7 @@
             android:layout_gravity="center"
             android:text="@string/title_activity_provider_login"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@string/header_size" />
+            android:textSize="30sp" />
 
     </LinearLayout>
 
@@ -29,13 +29,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/fingerprintLogo1"
+                android:layout_width="wrap_content"
+                android:layout_height="240dp"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/fingerprint" />
+
+            <TextView
+                android:id="@+id/clinicianInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/clinician_login_note"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/providerLoginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="37dp"
+            android:layout_marginBottom="18dp"
             android:text="@string/login_button_provider_login"
             android:textSize="28sp" />
 

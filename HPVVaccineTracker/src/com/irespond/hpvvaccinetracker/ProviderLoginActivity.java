@@ -1,10 +1,13 @@
 package com.irespond.hpvvaccinetracker;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import com.example.hpvvaccinetracker.R;
 import com.irespond.biometrics.client.BiometricInterface;
 import com.irespond.biometrics.client.IrespondActivity;
+import com.irespond.hpvvaccinetracker.api.ApiCallback;
+import com.irespond.hpvvaccinetracker.api.ApiInterface;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -29,10 +32,21 @@ public class ProviderLoginActivity extends Activity {
 		mLoginButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				UUID uuid = UUID.fromString("de317bca-74d4-476c-a889-8d0286f79c16");
-				BiometricInterface.verify(uuid);
-				startActivityForResult(new Intent(ProviderLoginActivity.this,
-						IrespondActivity.class), 1);
+				mLoginButton.setEnabled(false);
+				ApiInterface.getInstance().fetchProviders(new ApiCallback<Collection<UUID>>() {
+					@Override
+					public void onSuccess(Collection<UUID> result) {
+						BiometricInterface.verify(result);
+						startActivityForResult(new Intent(ProviderLoginActivity.this,
+								IrespondActivity.class), 1);
+					}
+
+					@Override
+					public void onFailure(String errorMessage) {
+						Toast.makeText(ProviderLoginActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+						mLoginButton.setEnabled(true);
+					}
+				});
 			}
 		});
 	}
@@ -40,17 +54,17 @@ public class ProviderLoginActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.provider_login, menu);
+		//getMenuInflater().inflate(R.menu.provider_login, menu);
 		return true;
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
-			Toast.makeText(this, "Verification successful: " + 
-					BiometricInterface.mIdentifyResult, Toast.LENGTH_LONG).show();
-		} else {
-			Toast.makeText(this, "Verification unsuccessful.", Toast.LENGTH_LONG).show();
+			//Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
+			startActivity(new Intent(this, ScanPatientActivity.class));
 		}
+		
+		mLoginButton.setEnabled(true);
 	}
 }
