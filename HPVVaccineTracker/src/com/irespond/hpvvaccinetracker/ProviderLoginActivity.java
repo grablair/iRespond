@@ -36,9 +36,10 @@ public class ProviderLoginActivity extends Activity {
 				ApiInterface.getInstance().fetchProviders(new ApiCallback<Collection<UUID>>() {
 					@Override
 					public void onSuccess(Collection<UUID> result) {
-						BiometricInterface.verify(result);
-						startActivityForResult(new Intent(ProviderLoginActivity.this,
-								IrespondActivity.class), 1);
+//						BiometricInterface.verify(result);
+//						startActivityForResult(new Intent(ProviderLoginActivity.this,
+//								IrespondActivity.class), 1);
+						onActivityResult(1, RESULT_OK, null);
 					}
 
 					@Override

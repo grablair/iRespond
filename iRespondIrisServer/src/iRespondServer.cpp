@@ -96,7 +96,7 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
   
   try {
     if (header == HEADER_WSQ_IDENTIFY) {
-      cout << "IDENTIFY" << endl;
+      //cout << "IDENTIFY" << endl;
       
       // Get WSQ file size.
       int32_t wsqSize;
@@ -114,7 +114,7 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       struct xytq_struct fingerTemplate;
       ProcessWSQTransfer(fingerTemplate, wsqSize, wsqData);
       
-      cout << "Processed." << endl;
+      //cout << "Processed." << endl;
       
       // Quality is good, shrink down to a template.
       template_t *probe = bz_prune(&fingerTemplate, 0);
@@ -230,8 +230,8 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       throw "Invalid header.";
     }
   } catch (char const *errorMessage) {
-    cout << "Error: " << errorMessage << endl << endl;
-    cout << "=================================" << endl << endl;
+    //cout << "Error: " << errorMessage << endl << endl;
+    //cout << "=================================" << endl << endl;
     
     int32_t errLen = htonl(strlen(errorMessage));
     

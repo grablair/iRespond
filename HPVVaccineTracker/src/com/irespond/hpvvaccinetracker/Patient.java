@@ -56,21 +56,21 @@ public class Patient {
 	
 	public void update(JSONObject obj) throws JSONException {
 		id = UUID.fromString(obj.getString("id"));
-		localId = obj.getString("local_id");
-		address = obj.getString("address");
-		area = obj.getString("area");
-		familyName = obj.getString("family_name");
-		givenName = obj.getString("given_name");
-		fathersName = obj.getString("fathers_name");
-		mothersName = obj.getString("mothers_name");
-		notes = obj.getString("notes");
-		phoneNumber = obj.getString("phone_number");
+		localId = obj.isNull("local_id") ? null : obj.getString("local_id");
+		address = obj.isNull("address") ? null : obj.getString("address");
+		area = obj.isNull("area") ? null : obj.getString("area");
+		familyName = obj.isNull("family_name") ? null : obj.getString("family_name");
+		givenName = obj.isNull("given_name") ? null : obj.getString("given_name");
+		fathersName = obj.isNull("fathers_name") ? null : obj.getString("fathers_name");
+		mothersName = obj.isNull("mothers_name") ? null : obj.getString("mothers_name");
+		notes = obj.isNull("notes") ? null : obj.getString("notes");
+		phoneNumber = obj.isNull("phone_number") ? null : obj.getString("phone_number");
 		smsReminders = obj.getBoolean("sms_reminders");
-		firstDoseDate = LocalDate.parse(obj.getString("first_dose_date"));
-		secondDoseDate = LocalDate.parse(obj.getString("second_dose_date"));
-		thirdDoseDate = LocalDate.parse(obj.getString("third_dose_date"));
-		birthDay = LocalDate.parse(obj.getString("birth_day"));
-		photoUrl = obj.getString("photo_url");
+		firstDoseDate = obj.isNull("first_dose_date") ? null : LocalDate.parse(obj.getString("first_dose_date"));
+		secondDoseDate = obj.isNull("second_dose_date") ? null : LocalDate.parse(obj.getString("second_dose_date"));
+		thirdDoseDate = obj.isNull("third_dose_date") ? null : LocalDate.parse(obj.getString("third_dose_date"));
+		birthDay = obj.isNull("birth_day") ? null : LocalDate.parse(obj.getString("birth_day"));
+		photoUrl = obj.isNull("photo_url") ? null : obj.getString("photo_url");
 	}
 	
 	public void fillParams(RequestParams params) {

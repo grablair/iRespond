@@ -32,9 +32,11 @@ public class ScanPatientActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				mScanButton.setEnabled(false);
-				BiometricInterface.identify();
-				startActivityForResult(new Intent(ScanPatientActivity.this,
-						IrespondActivity.class), 1);
+//				BiometricInterface.identify();
+//				startActivityForResult(new Intent(ScanPatientActivity.this,
+//						IrespondActivity.class), 1);
+				BiometricInterface.mIdentifyResult = UUID.fromString("de317bca-74d4-476c-a889-8d0286f79c16");
+				onActivityResult(1, RESULT_OK, null);
 			}
 		});
 	}
@@ -57,10 +59,10 @@ public class ScanPatientActivity extends Activity {
 					if (result != null) {
 						// Patient found.
 						HPVVaccineTrackerApp.setCurrentPatient(result);
-						startActivity(new Intent(ScanPatientActivity.this, PatientNotFoundActivity.class));
+						startActivity(new Intent(ScanPatientActivity.this, PatientFoundActivity.class));
 					} else {
 						// Patient not found.
-						startActivity(new Intent(ScanPatientActivity.this, PatientFoundActivity.class));
+						startActivity(new Intent(ScanPatientActivity.this, PatientNotFoundActivity.class));
 					}
 					mScanButton.setEnabled(true);
 				}

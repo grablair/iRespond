@@ -71,10 +71,10 @@ bool FingerprintDatabase::identify(template_t *probe, uuid &oUuid) {
   int count = 0;
   for (auto itr = templates.begin(); itr != templates.end(); ++itr) {
     int matchScore = bozorth_to_gallery(probeLen, probe, itr->second.get());
-    if (matchScore >= 0) {
-      cout << "Potential match with: " << itr->first << endl;
-      cout << "         Match Score: " << matchScore << endl << endl;
-    }
+    //if (matchScore >= 0) {
+    //  cout << "Potential match with: " << itr->first << endl;
+    //  cout << "         Match Score: " << matchScore << endl << endl;
+    //}
     if (matchScore > maxMatchScore) {
       maxMatchScore = matchScore;
       maxUuid = itr->first;
@@ -84,15 +84,15 @@ bool FingerprintDatabase::identify(template_t *probe, uuid &oUuid) {
   
   gettimeofday(&tv2, NULL);
   
-  cout << "Num Minutiae: " << probe->nrows << endl;
-  cout << "Probe Length: " << probeLen << endl;
-  cout << "Match Rate:   " << ((double) count / (tv2.tv_usec - tv.tv_usec) * 1000000) << " fingerprints / sec" << endl;
+  //cout << "Num Minutiae: " << probe->nrows << endl;
+  //cout << "Probe Length: " << probeLen << endl;
+  //cout << "Match Rate:   " << ((double) count / (tv2.tv_usec - tv.tv_usec) * 1000000) << " fingerprints / sec" << endl;
   
   if (maxMatchScore < MATCH_THRESHOLD) {
     return false;
   }
   
-  cout << "Match Score:  " << maxMatchScore << endl << endl;
+  //cout << "Match Score:  " << maxMatchScore << endl << endl;
   
   oUuid = maxUuid;
   return true;
