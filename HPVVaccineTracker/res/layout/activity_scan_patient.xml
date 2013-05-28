@@ -1,107 +1,72 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:orientation="vertical"
     tools:context=".ScanPatientActivity" >
 
-    <RelativeLayout
-        android:id="@+id/scanPatientUI"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp" >
 
-	    <LinearLayout
-	        android:id="@+id/headerScanPatient1"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="#EEEEEE"
-	        android:orientation="vertical"
-	        android:paddingBottom="10dp"
-	        android:paddingTop="10dp" >
-
-		    <TextView
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center"
-		        android:text="Scan Patient&apos;s Finger"
-		        android:textSize="36sp" />
-	
-	    </LinearLayout>
-
-	    <RelativeLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" >
-
-	        <Button
-	            android:id="@+id/patientScanButton"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentBottom="true"
-	            android:layout_centerHorizontal="true"
-	            android:layout_marginBottom="37dp"
-	            android:text="@string/login_button_provider_login"
-	            android:textSize="28sp" />
-
-	    </RelativeLayout>
-	</RelativeLayout>
+        <TextView
+            android:id="@+id/providerLoginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/title_activity_scan_patient"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="30sp" />
+    </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/recordFoundUI"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
 
-	    <LinearLayout
-	        android:id="@+id/headerScanPatient2"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="#EEEEEE"
-	        android:orientation="vertical"
-	        android:paddingBottom="10dp"
-	        android:paddingTop="10dp" >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-		    <TextView
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center"
-		        android:text="Record Found"
-		        android:textSize="36sp" />
+            <ImageView
+                android:id="@+id/fingerprintLogo2"
+                android:layout_width="wrap_content"
+                android:layout_height="240dp"
+                android:contentDescription="@string/fingerprint_logo_desc"
+                android:maxHeight="20dp"
+                android:maxWidth="20dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/fingerprint" />
 
-	   </LinearLayout>
+            <TextView
+                android:id="@+id/scanPatientInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/patient_scan_note"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	    <RelativeLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" >
+        </LinearLayout>
 
-	        <TextView
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:gravity="center"
-	            android:text="Correct Patient?"
-	            android:textSize="36sp" />
+        <Button
+            android:id="@+id/scanPatientButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="18dp"
+            android:text="@string/login_button_scan_patient"
+            android:textSize="28sp" />
+    </RelativeLayout>
 
-	        <LinearLayout
-		        android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-			    android:orientation="horizontal"
-			    android:layout_centerHorizontal="true"
-			    android:layout_alignParentBottom="true" >
-
-		        <Button
-		            android:id="@+id/patientConfirmedButton"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="37dp"
-		            android:text="Yes"
-		            android:textSize="36sp" />
-
-		        <Button
-		            android:id="@+id/patientNotConfirmedButton"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="37dp"
-		            android:text="No"
-		            android:textSize="36sp" />
-		    </LinearLayout>
-		</RelativeLayout>
-	</RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

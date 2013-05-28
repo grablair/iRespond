@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.net.SocketTimeoutException;
 
 
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -334,6 +335,12 @@ public class ApiInterface {
 			public void onFailure(Throwable e, String message) {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
+				} else if (e instanceof HttpResponseException) {
+					HttpResponseException he = (HttpResponseException) e;
+					if (he.getStatusCode() == 404)
+						callback.onSuccess(null);
+					else
+						callback.onFailure(he.getMessage());
 				} else {
 					callback.onFailure("FAILURE");
 				}

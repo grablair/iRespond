@@ -1,8 +1,12 @@
 package com.irespond.hpvvaccinetracker;
 
+import java.util.UUID;
+
 import com.example.hpvvaccinetracker.R;
 import com.irespond.biometrics.client.BiometricInterface;
 import com.irespond.biometrics.client.IrespondActivity;
+import com.irespond.hpvvaccinetracker.api.ApiCallback;
+import com.irespond.hpvvaccinetracker.api.ApiInterface;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -11,35 +15,28 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class ScanPatientActivity extends Activity {
 
 	public static Button mScanButton;
 
-	private static RelativeLayout scanLayout;
-	private static RelativeLayout recordFoundLayout;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scan_patient);
 
-		mScanButton = (Button) findViewById(R.id.patientScanButton);
+		mScanButton = (Button) findViewById(R.id.scanPatientButton);
 
 		mScanButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				mScanButton.setEnabled(false);
 				BiometricInterface.identify();
 				startActivityForResult(new Intent(ScanPatientActivity.this,
 						IrespondActivity.class), 1);
 			}
 		});
-
-		scanLayout = (RelativeLayout) findViewById(R.id.scanPatientUI);
-		recordFoundLayout = (RelativeLayout) findViewById(R.id.recordFoundUI);
-		recordFoundLayout.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
@@ -52,18 +49,32 @@ public class ScanPatientActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
-			// check if the returned UUID is in the database
+			UUID patientId = BiometricInterface.mIdentifyResult;
+			ApiInterface.getInstance().fetchPatient(patientId, new ApiCallback<Patient>() {
+				@Override
+				public void onSuccess(Patient result) {
+					// Successful response.
+					if (result != null) {
+						// Patient found.
+						HPVVaccineTrackerApp.setCurrentPatient(result);
+						startActivity(new Intent(ScanPatientActivity.this, PatientNotFoundActivity.class));
+					} else {
+						// Patient not found.
+						startActivity(new Intent(ScanPatientActivity.this, PatientFoundActivity.class));
+					}
+					mScanButton.setEnabled(true);
+				}
 
-			// if the UUID is found, bring up record found UI
-			scanLayout.setVisibility(View.INVISIBLE);
-			recordFoundLayout.setVisibility(View.VISIBLE);
-
-			// otherwise, ask if the 
-            
-			Toast.makeText(this, "Identification successful: " + 
-					BiometricInterface.mIdentifyResult, Toast.LENGTH_LONG).show();
+				@Override
+				public void onFailure(String errorMessage) {
+					// Unsuccessful response.
+					Toast.makeText(ScanPatientActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+					mScanButton.setEnabled(true);
+				}
+			});
 		} else {
 			Toast.makeText(this, "Identification unsuccessful.", Toast.LENGTH_LONG).show();
+			mScanButton.setEnabled(true);
 		}
 	}
 

@@ -19,6 +19,7 @@ public class Patient {
 	public String mothersName;
 	public String notes;
 	public String phoneNumber;
+	public String photoUrl;
 	public boolean smsReminders;
 	public LocalDate firstDoseDate;
 	public LocalDate secondDoseDate;
@@ -30,7 +31,7 @@ public class Patient {
 			String mothersName, String notes, String phoneNumber,
 			boolean smsReminders, LocalDate firstDoseDate,
 			LocalDate secondDoseDate, LocalDate thirdDoseDate,
-			LocalDate birthDay) {
+			LocalDate birthDay, String photoUrl) {
 		this.id = id;
 		this.localId = localId;
 		this.address = address;
@@ -46,6 +47,7 @@ public class Patient {
 		this.secondDoseDate = secondDoseDate;
 		this.thirdDoseDate = thirdDoseDate;
 		this.birthDay = birthDay;
+		this.photoUrl = photoUrl;
 	}
 	
 	public Patient(JSONObject obj) throws JSONException {
@@ -68,6 +70,7 @@ public class Patient {
 		secondDoseDate = LocalDate.parse(obj.getString("second_dose_date"));
 		thirdDoseDate = LocalDate.parse(obj.getString("third_dose_date"));
 		birthDay = LocalDate.parse(obj.getString("birth_day"));
+		photoUrl = obj.getString("photo_url");
 	}
 	
 	public void fillParams(RequestParams params) {
@@ -99,5 +102,7 @@ public class Patient {
 			params.put("third_dose_date", thirdDoseDate.toString());
 		if (birthDay != null)
 			params.put("birth_day", birthDay.toString());
+		if (photoUrl != null)
+			params.put("photo_url", photoUrl);
 	}
 }

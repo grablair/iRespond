@@ -5,6 +5,7 @@ import android.content.Context;
 
 public class HPVVaccineTrackerApp extends Application {
 	private static Context context;
+	private static Patient currentPatient;
 
 	@Override
 	public void onCreate() {
@@ -20,5 +21,13 @@ public class HPVVaccineTrackerApp extends Application {
 	 */
 	public static Context getAppContext() {
 		return HPVVaccineTrackerApp.context;
+	}
+	
+	public static Patient getCurrentPatient() {
+		return currentPatient;
+	}
+	
+	public static void setCurrentPatient(Patient currentPatient) {
+		HPVVaccineTrackerApp.currentPatient = currentPatient;
 	}
 }

@@ -15,7 +15,7 @@
         android:paddingTop="10dp" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/providerLoginTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -38,6 +38,7 @@
                 android:id="@+id/fingerprintLogo1"
                 android:layout_width="wrap_content"
                 android:layout_height="240dp"
+                android:contentDescription="@string/fingerprint_logo_desc"
                 android:maxHeight="20dp"
                 android:maxWidth="20dp"
                 android:paddingBottom="5dp"
@@ -46,7 +47,7 @@
                 android:src="@drawable/fingerprint" />
 
             <TextView
-                android:id="@+id/clinicianInstructions"
+                android:id="@+id/providerLoginInstructions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
