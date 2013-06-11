@@ -15,6 +15,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This activity controls instruction to dispense
+ * doses.
+ * 
+ * @author grahamb5
+ * @author angela18
+ */
 public class GiveDoseActivity extends Activity {
 	private static TextView mTitle;
 	private static Button mDone;
@@ -24,17 +31,23 @@ public class GiveDoseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_give_dose);
 		
+		// Get the current patient.
 		Patient p = HPVVaccineTrackerApp.getCurrentPatient();
 		
 		if (p == null) {
+			// There was no patient.
 			Toast.makeText(this, "No active patient.", Toast.LENGTH_LONG).show();
 			finish();
 			return;
 		}
 		
+		// Get views.
 		mTitle = (TextView) findViewById(R.id.doseTitle);
 		mDone = (Button) findViewById(R.id.doseDone);
 		
+		// Check to see what dose is necessary.
+		// Also checks to see if the patient returned
+		// on the wrong date (was too early).
 		boolean tooEarly;
 		if (p.firstDoseDate == null) {
 			mTitle.setText(getString(R.string.first_dose_text));
@@ -52,6 +65,7 @@ public class GiveDoseActivity extends Activity {
 		}
 		
 		if (tooEarly) {
+			// Patient was too early. Start the TooEarlyActivity.
 			startActivity(new Intent(this, TooEarlyActivity.class));
 			finish();
 		} else {
@@ -59,12 +73,14 @@ public class GiveDoseActivity extends Activity {
 		}
 	}
 	
+	// Set the submission button listener.
 	private OnClickListener doneListener = new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
 			mDone.setEnabled(false);
-			Patient p = HPVVaccineTrackerApp.getCurrentPatient();
+			final Patient p = HPVVaccineTrackerApp.getCurrentPatient();
 			
+			// Set the next dose date to now.
 			if (p.firstDoseDate == null) {
 				p.firstDoseDate = LocalDate.now();
 			} else if (p.secondDoseDate == null) {
@@ -73,6 +89,7 @@ public class GiveDoseActivity extends Activity {
 				p.thirdDoseDate = LocalDate.now();
 			}
 			
+			// Update the patient in the remote server.
 			ApiInterface.getInstance().updatePatient(p, new ApiCallback<Void>() {
 				@Override
 				public void onSuccess(Void result) {
@@ -84,6 +101,15 @@ public class GiveDoseActivity extends Activity {
 				public void onFailure(String errorMessage) {
 					Toast.makeText(GiveDoseActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
 					mDone.setEnabled(true);
+					
+					// Reset the updated dose date.
+					if (p.secondDoseDate == null) {
+						p.firstDoseDate = null;
+					} else if (p.thirdDoseDate == null) {
+						p.secondDoseDate = null;
+					} else {
+						p.thirdDoseDate = null;
+					}
 				}
 			});
 		}

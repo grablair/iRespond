@@ -3,7 +3,7 @@
 
 #include "./ThreadPool.h"
 
-namespace iris {
+namespace irespond {
 
 // This is the thread start routine, i.e., the function that threads
 // are born into.
@@ -122,4 +122,4 @@ void *ThreadLoop(void *tpool) {
   return NULL;
 }
 
-}  // namespace iris
+}  // namespace irespond

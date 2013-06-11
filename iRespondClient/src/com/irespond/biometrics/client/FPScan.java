@@ -7,6 +7,11 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
+/**
+ * The FPScan runs the Futronic scanner.
+ * 
+ * @author futronic
+ */
 public class FPScan {
 	private final Handler mHandler;
 	private ScanThread mScanThread;
@@ -152,12 +157,6 @@ public class FPScan {
 			}
 			//show image
 			mHandler.obtainMessage(BiometricInterface.MESSAGE_SHOW_IMAGE).sendToTarget();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 
 		public void cancel() {

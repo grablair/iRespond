@@ -12,12 +12,18 @@ import com.irespond.hpvvaccinetracker.api.ApiInterface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+/**
+ * This activity deals with the provider login prompt and
+ * facilitates said login.
+ * 
+ * @author grahamb5
+ * @author angela18
+ */
 public class ProviderLoginActivity extends Activity {
 	
 	public static Button mLoginButton;
@@ -27,15 +33,21 @@ public class ProviderLoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_provider_login);
 		
+		// Get button view.
 		mLoginButton = (Button) findViewById(R.id.providerLoginButton);
 		
+		// Set button on-click listener.
 		mLoginButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				mLoginButton.setEnabled(false);
+				
+				// Get all the provider's UUIDs.
 				ApiInterface.getInstance().fetchProviders(new ApiCallback<Collection<UUID>>() {
 					@Override
 					public void onSuccess(Collection<UUID> result) {
+						// Set the Biometric Interface to verify, and then
+						// start the IrespondActivity.
 						BiometricInterface.verify(result);
 						startActivityForResult(new Intent(ProviderLoginActivity.this,
 								IrespondActivity.class), 1);
@@ -53,16 +65,9 @@ public class ProviderLoginActivity extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.provider_login, menu);
-		return true;
-	}
-
-	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
-			//Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
+			// The verification was successful.
 			startActivity(new Intent(this, ScanPatientActivity.class));
 		}
 		

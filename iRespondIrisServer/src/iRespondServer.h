@@ -1,5 +1,5 @@
-#ifndef _IRIS_SERVER_H_
-#define _IRIS_SERVER_H_
+#ifndef _IRESPOND_SERVER_H_
+#define _IRESPOND_SERVER_H_
 
 #include <stdint.h>
 #include <string>
@@ -12,8 +12,8 @@ extern "C" {
 #undef min
 }
 
-#include "./ThreadPool.h"
-#include "./PracticalSocket.h"
+#include "ThreadPool.h"
+#include "PracticalSocket.h"
 #include "FingerprintDatabase.h"
 
 #define ntohll(x) \
@@ -21,46 +21,90 @@ extern "C" {
     ntohl(((uint32_t)(x >> 32))) )
 #define htonll(x) (ntohll(x))
 
-namespace iris {
+namespace irespond {
 
-// The HttpServer class contains the main logic for the web server.
-class IrisServer {
- public:
-  // Creates a new IrisServer object for port "port" and serving
-  // files out of path "staticfile_dirpath".  The indices for
-  // query processing are located in the "indices" list. The constructor
-  // does not do anything except memorize these variables.
-  explicit IrisServer(unsigned short port);
+/**
+ * The IrespondServer handles all the network communication
+ * for the iRespond fingerprint recognition system.
+ */
+class IrespondServer {
+  public:
+    /**
+     * Creates a new IrespondServer object for port "port".
+     */
+    explicit IrespondServer(unsigned short port);
 
-  // The destructor closes the listening socket if it is open and
-  // also kills off any threads in the threadpool.
-  virtual ~IrisServer(void);
+    /**
+     * Destructor that shuts down the thread pool and database.
+     */
+    virtual ~IrespondServer(void);
 
-  // Creates a listening socket for the server and launches it, accepting
-  // connections and dispatching them to worker threads.  Returns
-  // "true" if the server was able to start and run, "false" otherwise.
-  bool Run(void);
+    /**
+     * Creates the listening socket and loops, waiting for
+     * connections, then assigns the connection to a
+     * Thread Pool for execution.
+     */
+    bool Run(void);
 
- private:
-  unsigned short port_;
-  const int kNumThreads;
-  FingerprintDatabase *database;
+  private:
+    unsigned short port_;
+    const int kNumThreads;
+    FingerprintDatabase *database;
 };
 
-class IrisServerTask : public ThreadPool::Task {
- public:
-  explicit IrisServerTask(ThreadPool::thread_task_fn f)
-    : ThreadPool::Task(f) { }
-  ~IrisServerTask() { delete client; }
+/**
+ * The IrespondServerTask simply holds the connection
+ * socket, and a copy of the database.
+ */
+class IrespondServerTask : public ThreadPool::Task {
+  public:
+    explicit IrespondServerTask(ThreadPool::thread_task_fn f)
+      : ThreadPool::Task(f) { }
+    ~IrespondServerTask() { delete client; }
 
-  TCPSocket *client;
-  FingerprintDatabase *database;
+    TCPSocket *client;
+    FingerprintDatabase *database;
 };
 
+/**
+ * Parses the minutiae in the given minutiae, and stores them
+ * in the oxytq output parameter.
+ * 
+ * @param oxytq The output XYTQ struct, for matching.
+ * @param minutiae The minutiae to parse into the XYTQ struct.
+ * @param w The width of the image the minutiae is extracted from.
+ * @param h The height of the image the minutiae is extracted from.
+ */
 void ParseMinutiae(struct xytq_struct &oxytq, MINUTIAE *minutiae, int w, int h);
 
+/**
+ * Processes the WSQ file sent over the network, and extracts the
+ * template, placing it in the oxytq output parameter.
+ * 
+ * @param oxytq The output XYTQ struct, for matching.
+ * @param wsqLen The length of the passed wsqData in bytes.
+ * @param wsqData the data of the WSQ file.
+ */
 void ProcessWSQTransfer(struct xytq_struct &oxytq, int32_t wsqLen, const char *wsqData);
 
-}  // namespace hw4
+/**
+ * The function the iRespond server is dispatched
+ * out to via the thread pool.
+ * 
+ * @param t The task containing all the information.
+ */
+void IrespondServer_ThrFn(ThreadPool::Task *t);
 
-#endif  // _IRIS_SERVER_H_
+/**
+ * A wrapper for reading the TCP socket.
+ * 
+ * @param socket The socket to read from.
+ * @param vbuf The buffer to write to.
+ * @param len The length of the buffer. This is also the
+ *            amount required to read before returning.
+ */
+void receive(TCPSocket *socket, void *vbuf, int32_t len);
+
+}  // namespace irespond
+
+#endif  // _IRESPOND_SERVER_H_

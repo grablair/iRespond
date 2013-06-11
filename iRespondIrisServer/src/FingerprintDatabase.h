@@ -26,9 +26,12 @@ const std::string TEMPLATE_EXTENSION = ".xyt";
 
 typedef struct xyt_struct template_t;
 
-namespace iris {
+namespace irespond {
   
-// The FingerprintDatabase class keeps track of all the fingerprints.
+/**
+ * The FingerprintDatabase class keeps track of all the fingerprints.
+ * It performs identification, verification and enrollment.
+ */
 class FingerprintDatabase {
  public:
   /**
@@ -80,6 +83,6 @@ class FingerprintDatabase {
   std::string databaseFolder;
 };
 
-}  // namespace iris
+}  // namespace irespond
 
 #endif  // _FINGERPRINT_DATABASE_H_

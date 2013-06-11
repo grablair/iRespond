@@ -2,11 +2,12 @@ CC=g++
 CFLAGS=-Iinclude -c -Wall -std=c++11
 LDFLAGS=-Iinclude -Llib -L/usr/lib64
 SOURCES= \
-	src/iris.cpp \
+	src/irespond.cpp \
 	src/iRespondServer.cpp \
 	src/PracticalSocket.cpp \
 	src/ThreadPool.cpp \
-	src/FingerprintDatabase.cpp
+	src/FingerprintDatabase.cpp \
+	src/Utilities.cpp
 LIBS= \
 	-lbozorth3 \
 	-lnfiq \
@@ -26,7 +27,7 @@ LIBS= \
 	-pthread
 OBJECTS=$(SOURCES:.cpp=.o)
 OUTPUT_FOLDER=bin
-EXECUTABLE=iris
+EXECUTABLE=irespond
 
 all: $(SOURCES) $(EXECUTABLE) test_send
 

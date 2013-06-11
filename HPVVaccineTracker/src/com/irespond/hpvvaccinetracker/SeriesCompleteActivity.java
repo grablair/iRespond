@@ -8,6 +8,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+/**
+ * This activity is for patients when their vaccination
+ * series is complete.
+ * 
+ * @author grahamb5
+ * @author angela18
+ */
 public class SeriesCompleteActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +23,7 @@ public class SeriesCompleteActivity extends Activity {
 		
 		Button doneButton = (Button) findViewById(R.id.completeButton);
 		
+		// Set the done button to just finish the activity.
 		doneButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

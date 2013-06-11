@@ -1,5 +1,5 @@
-#ifndef _IRIS_THREADPOOL_H_
-#define _IRIS_THREADPOOL_H_
+#ifndef _IRESPOND_THREADPOOL_H_
+#define _IRESPOND_THREADPOOL_H_
 
 extern "C" {
 #include <pthread.h>  // for the pthread threading/mutex functions
@@ -8,7 +8,7 @@ extern "C" {
 #include <stdint.h>   // for uint32_t, etc.
 #include <list>       // for std::list
 
-namespace iris {
+namespace irespond {
 
 // A ThreadPool is, well, a pool of threads. ;)  A ThreadPool is an
 // abstraction that allows customers to dispatch tasks to a set of
@@ -74,6 +74,6 @@ class ThreadPool {
   pthread_t *thread_array_;
 };
 
-}  // namespace hw4
+}  // namespace irespond
 
-#endif  // _IRIS_THREADPOOL_H_
+#endif  // _IRESPOND_THREADPOOL_H_

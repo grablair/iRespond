@@ -11,12 +11,18 @@ import com.irespond.hpvvaccinetracker.api.ApiInterface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+/**
+ * This activity deals with the patient identification
+ * and login process.
+ * 
+ * @author grahamb5
+ * @author angela18
+ */
 public class ScanPatientActivity extends Activity {
 
 	public static Button mScanButton;
@@ -26,11 +32,15 @@ public class ScanPatientActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scan_patient);
 
+		// Get view.
 		mScanButton = (Button) findViewById(R.id.scanPatientButton);
 
+		// Set scan button's on-click listener.
 		mScanButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				// Set next biometric function to be an identification.
+				// Start the IrespondActivity.
 				mScanButton.setEnabled(false);
 				BiometricInterface.identify();
 				startActivityForResult(new Intent(ScanPatientActivity.this,
@@ -42,16 +52,12 @@ public class ScanPatientActivity extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.scan_patient, menu);
-		return true;
-	}
-
-	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
+			// iRespond Biometric Library returned a value.
 			UUID patientId = BiometricInterface.mIdentifyResult;
+			
+			// Get the patient identified by the biometric id, if it exists.
 			ApiInterface.getInstance().fetchPatient(patientId, new ApiCallback<Patient>() {
 				@Override
 				public void onSuccess(Patient result) {
@@ -75,6 +81,7 @@ public class ScanPatientActivity extends Activity {
 				}
 			});
 		} else {
+			// iRespond didn't return anything, or returned non RESULT_OK.
 			Toast.makeText(this, "Identification unsuccessful.", Toast.LENGTH_LONG).show();
 			mScanButton.setEnabled(true);
 		}

@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,41 +33,54 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+/**
+ * The <code>IrespondActivity</code> is the only activity
+ * in the library, and deals with all the UI involved in
+ * the identify, verify and enrollment functions.
+ * 
+ * @author grahamb5
+ * @author angela18
+ */
 public class IrespondActivity extends Activity {
+	/** The number of images to send in enrollment. */
 	private static final int ENROLL_IMAGE_COUNT = 3;
 	
-	/** Called when the activity is first created. */
+	/* The views needed by the activity. */
 	private static Button mButtonScan;
 	private static ImageView mFingerImage;
 	private static ProgressBar mProgressBar;
 
+	/** The scanner running object. */
 	private static FPScan mFPScan = null;
 
-	// Intent request codes
+	/** The USB device context. */
 	private static UsbDeviceDataExchangeImpl usb_host_ctx = null;
-
-	private static Activity thisActivity;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// Checks to see if a request has actually
+		// been requested.
 		if (BiometricInterface.mRequest == null) {
 			Toast.makeText(this, "An invalid function was called.", Toast.LENGTH_LONG).show();
 			setResult(RESULT_CANCELED);
 			finish();
 		}
-		
-		thisActivity = this;
+
+		// Sets the layout.
 		setContentView(R.layout.activity_irespond);
 
+		// Gets all of the necessary views.
 		mButtonScan = (Button) findViewById(R.id.scanbtn);
 		mFingerImage = (ImageView) findViewById(R.id.fingerImage);
 		mProgressBar = (ProgressBar) findViewById(R.id.loadingBar);
 
+		// The on-click listener for the main button.
 		mButtonScan.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				// Change UI state.
 				mButtonScan.setEnabled(false);
 				showProgress(true);
 				mFPScan.stop();
@@ -79,7 +93,7 @@ public class IrespondActivity extends Activity {
 				else
 					bRet = devScan.OpenDevice();
 				if (!bRet) {
-					Toast.makeText(thisActivity, devScan.GetErrorMessage(), Toast.LENGTH_LONG).show();
+					Toast.makeText(IrespondActivity.this, devScan.GetErrorMessage(), Toast.LENGTH_LONG).show();
 					return;    			
 				}
 				byte[] wsqImg = new byte[BiometricInterface.mImageWidth*BiometricInterface.mImageHeight];
@@ -88,7 +102,7 @@ public class IrespondActivity extends Activity {
 				
 				// byte array created
 				if (wsqHelper.ConvertRawToWsq(hDevice, BiometricInterface.mImageWidth, BiometricInterface.mImageHeight, 2.25f, BiometricInterface.mImageFP, wsqImg)) {
-
+					// The WSQ conversion succeeded. Perform network request.
 					switch(BiometricInterface.mRequest) {
 					case IDENTIFY:
 						// Do identify function.
@@ -118,27 +132,25 @@ public class IrespondActivity extends Activity {
 									            BiometricInterface.mEnrollImages = null;
 									            mButtonScan.setEnabled(true);
 												initScanMode();
-												Toast.makeText(thisActivity, "0 / " + ENROLL_IMAGE_COUNT +
+												Toast.makeText(IrespondActivity.this, "0 / " + ENROLL_IMAGE_COUNT +
 														" images taken for enrollment.", Toast.LENGTH_LONG).show();
 									            break;
 									        }
 									    }
 									};
 
-									AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+									AlertDialog.Builder builder = new AlertDialog.Builder(IrespondActivity.this);
 									builder.setMessage("No match was found. Would you like to try again or enroll this person in the system?")
 										.setPositiveButton("Try again", dialogClickListener)
 									    .setNegativeButton("Enroll", dialogClickListener).show();
-									
-									
 								}
 							}
 
 							@Override
 							public void onFailure(String errorMessage) {
-								// Error.
+								// Error. Show the error message.
 								mButtonScan.setEnabled(true);
-								Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
+								Toast.makeText(IrespondActivity.this, errorMessage, Toast.LENGTH_LONG).show();
 								initScanMode();
 							}
 						});
@@ -156,16 +168,16 @@ public class IrespondActivity extends Activity {
 								} else {
 									// Verification failed. Have user try again.
 									mButtonScan.setEnabled(true);
-									Toast.makeText(thisActivity, "Verification unsuccessful. Pleas try again.", Toast.LENGTH_LONG).show();
+									Toast.makeText(IrespondActivity.this, "Verification unsuccessful. Pleas try again.", Toast.LENGTH_LONG).show();
 									initScanMode();
 								}
 							}
 
 							@Override
 							public void onFailure(String errorMessage) {
-								// Error.
+								// Error. Show the error message.
 								mButtonScan.setEnabled(true);
-								Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
+								Toast.makeText(IrespondActivity.this, errorMessage, Toast.LENGTH_LONG).show();
 								initScanMode();
 							}
 						});
@@ -196,21 +208,21 @@ public class IrespondActivity extends Activity {
 								public void onFailure(String errorMessage) {
 									// Error.
 									mButtonScan.setEnabled(true);
-									Toast.makeText(thisActivity, errorMessage, Toast.LENGTH_LONG).show();
+									Toast.makeText(IrespondActivity.this, errorMessage, Toast.LENGTH_LONG).show();
 									initScanMode();
 								}
 							});
 						} else {
 							// We need more enrollment images.
 							mButtonScan.setEnabled(true);
-							Toast.makeText(thisActivity, "" + BiometricInterface.mEnrollImages.size() + " / " + ENROLL_IMAGE_COUNT +
+							Toast.makeText(IrespondActivity.this, "" + BiometricInterface.mEnrollImages.size() + " / " + ENROLL_IMAGE_COUNT +
 									" images taken for enrollment.", Toast.LENGTH_LONG).show();
 							initScanMode();
 						}
 						break;
 					default:
 						// Somehow the RequestType was set to null or some invalid value. Return failure.
-						Toast.makeText(thisActivity, "An invalid function was called.", Toast.LENGTH_LONG).show();
+						Toast.makeText(IrespondActivity.this, "An invalid function was called.", Toast.LENGTH_LONG).show();
 						setResult(RESULT_CANCELED);
 						finish();
 						break;
@@ -226,6 +238,7 @@ public class IrespondActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		// Stop the scanner and close devices.
 		BiometricInterface.mStop = true;	       
 		if( mFPScan != null )
 		{
@@ -241,7 +254,7 @@ public class IrespondActivity extends Activity {
 	 * 
 	 * @return true iff all succeeds.
 	 */
-	private static boolean StartScan() {
+	private boolean StartScan() {
 		mFPScan = new FPScan(usb_host_ctx, mHandler);
 		mFPScan.start();
 
@@ -276,7 +289,10 @@ public class IrespondActivity extends Activity {
 	}
 
 	// The Handler that gets information back from the FPScan
-	private static final Handler mHandler = new Handler() {
+	// Certain Toasts are commented out as they are for debugging
+	// purposes.
+	@SuppressLint("HandlerLeak")
+	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -298,13 +314,13 @@ public class IrespondActivity extends Activity {
 			case UsbDeviceDataExchangeImpl.MESSAGE_ALLOW_DEVICE:
 				if(usb_host_ctx.ValidateContext()) {
 					if(StartScan()) {
-						Toast.makeText(thisActivity, "Place finger on scanner.", Toast.LENGTH_LONG).show();
+						Toast.makeText(IrespondActivity.this, "Place finger on scanner.", Toast.LENGTH_LONG).show();
 					}	
 				} else
-					Toast.makeText(thisActivity, "Can't open scanner device", Toast.LENGTH_LONG).show();
+					Toast.makeText(IrespondActivity.this, "Can't open scanner device", Toast.LENGTH_LONG).show();
 				break;           
 			case UsbDeviceDataExchangeImpl.MESSAGE_DENY_DEVICE:
-				Toast.makeText(thisActivity, "User deny scanner device", Toast.LENGTH_LONG).show();
+				Toast.makeText(IrespondActivity.this, "User deny scanner device", Toast.LENGTH_LONG).show();
 				break;
 			}
 		}
@@ -312,17 +328,22 @@ public class IrespondActivity extends Activity {
 
 	/**
 	 * Displays a frame on the screen.
+	 * 
+	 * Taken from the Futronic API.
 	 */
 	private static void ShowBitmap() {
 		int[] pixels = new int[BiometricInterface.mImageWidth * BiometricInterface.mImageHeight];
 		for( int i=0; i<BiometricInterface.mImageWidth * BiometricInterface.mImageHeight; i++)
 			pixels[i] = BiometricInterface.mImageFP[i];
+		
+		// Create the empty bitmap.
 		Bitmap emptyBmp = Bitmap.createBitmap(pixels, BiometricInterface.mImageWidth, BiometricInterface.mImageHeight, Config.RGB_565);
 
 		int width, height; 
 		height = emptyBmp.getHeight(); 
 		width = emptyBmp.getWidth();     
 
+		// Draw the bitmap from the image.
 		BiometricInterface.mBitmapFP = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565); 
 		Canvas c = new Canvas(BiometricInterface.mBitmapFP); 
 		Paint paint = new Paint(); 
@@ -332,12 +353,8 @@ public class IrespondActivity extends Activity {
 		paint.setColorFilter(f); 
 		c.drawBitmap(emptyBmp, 0, 0, paint); 
 
+		// Set the image to the newly created bitmap.
 		mFingerImage.setImageBitmap(BiometricInterface.mBitmapFP);
-
-		byte[][] image2d = new byte[BiometricInterface.mImageHeight][BiometricInterface.mImageWidth];
-		for (int i = 0; i < BiometricInterface.mImageWidth * BiometricInterface.mImageHeight; i++) {
-			image2d[i / BiometricInterface.mImageWidth][i % BiometricInterface.mImageWidth] = BiometricInterface.mImageFP[i];
-		}
 	}     
 
 
@@ -354,6 +371,7 @@ public class IrespondActivity extends Activity {
 			 int shortAnimTime = getResources().getInteger(
 					 android.R.integer.config_shortAnimTime);
 
+			 // Show progress bar.
 			 mProgressBar.setVisibility(View.VISIBLE);
 			 mProgressBar.animate().setDuration(shortAnimTime)
 			 .alpha(show ? 1 : 0)
@@ -365,6 +383,7 @@ public class IrespondActivity extends Activity {
 				 }
 			 });
 
+			 // Hide fingerprint image.
 			 mFingerImage.setVisibility(View.VISIBLE);
 			 mFingerImage.animate().setDuration(shortAnimTime)
 			 .alpha(show ? 0 : 1)

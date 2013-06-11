@@ -29,10 +29,9 @@ import com.loopj.android.http.RequestParams;
 
 /**
  * Singleton class that facilitates connections to the HTTP API.
+ * Reused and altered from another project of mine (grahamb5).
  *
- * @author Chris brucec5
  * @author Graham grahamb5
- *
  */
 public class ApiInterface {
 
@@ -107,12 +106,18 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Fetch the providers from the server. On success, returns
+	 * a collection of UUIDs.
+	 * 
+	 * @param callback The callback to send the UUIDs back to.
+	 */
 	public void fetchProviders(final ApiCallback<Collection<UUID>> callback) {
 		if (failOnNoInternet(callback))
 			return;
@@ -124,6 +129,7 @@ public class ApiInterface {
 				
 				int providersLen = providersJson.length();
 				
+				// Read all the UUIDs from the JSON.
 				for (int i = 0; i < providersLen; i++) {
 					try {
 						JSONObject providerObject = providersJson.getJSONObject(i);
@@ -150,12 +156,19 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Deletes the provider identified by <code>uuid</code> from the remote
+	 * server.
+	 * 
+	 * @param uuid The UUID of the provider to delete.
+	 * @param callback The callback to call onSuccess/onFailure on.
+	 */
 	public void deleteProvider(final UUID uuid, final ApiCallback<Void> callback) {
 		if (failOnNoInternet(callback))
 			return;
@@ -189,12 +202,18 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Creates the given {@link Patient} on the remote server.
+	 * 
+	 * @param p The patient to create remotely.
+	 * @param callback The callback to call onSuccess/onFailure on.
+	 */
 	public void createPatient(final Patient p, final ApiCallback<Void> callback) {
 		if (failOnNoInternet(callback))
 			return;
@@ -209,6 +228,7 @@ public class ApiInterface {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				try {
+					// Update the patient information.
 					p.update(obj);
 					callback.onSuccess(null);
 				} catch (JSONException e) {
@@ -228,12 +248,18 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Updates the given {@link Patient} on the remote server.
+	 * 
+	 * @param p The patient to update remotely.
+	 * @param callback The callback to call onSuccess/onFailure on.
+	 */
 	public void updatePatient(final Patient p, final ApiCallback<Void> callback) {
 		if (failOnNoInternet(callback))
 			return;
@@ -246,6 +272,7 @@ public class ApiInterface {
 			@Override
 			public void onSuccess(JSONObject obj) {
 				try {
+					// Update the given patient.
 					p.update(obj);
 					callback.onSuccess(null);
 				} catch (JSONException e) {
@@ -265,12 +292,18 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Deletes the given patient from the remote server.
+	 * 
+	 * @param p The patient to delete.
+	 * @param callback The callback to call onSuccess/onFailure on.
+	 */
 	public void deletePatient(final Patient p, final ApiCallback<Void> callback) {
 		if (failOnNoInternet(callback))
 			return;
@@ -304,12 +337,19 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Fetch the patient with the given <code>id</code>. The patient is
+	 * returned vie the callback parameter in <code>callback</code>.
+	 * 
+	 * @param id The id of the patient in question.
+	 * @param callback The callback to return the Patient to.
+	 */
 	public void fetchPatient(final UUID id, final ApiCallback<Patient> callback) {
 		if (failOnNoInternet(callback))
 			return;
@@ -343,13 +383,14 @@ public class ApiInterface {
 				if (e instanceof SocketTimeoutException) {
 					callback.onFailure("Network Timeout");
 				} else if (e instanceof HttpResponseException) {
+					// Check HTTP errors.
 					HttpResponseException he = (HttpResponseException) e;
 					if (he.getStatusCode() == 404)
 						callback.onSuccess(null);
 					else
 						callback.onFailure(he.getMessage());
 				} else {
-					callback.onFailure("FAILURE");
+					callback.onFailure(message);
 				}
 			}
 		});

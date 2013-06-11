@@ -29,24 +29,18 @@ using std::endl;
 using std::string;
 using boost::uuids::uuid;
 
-namespace iris {
+namespace irespond {
 
-// This is the function that threads are dispatched into
-// in order to process new client connections.
-void IrisServer_ThrFn(ThreadPool::Task *t);
-
-void receive(TCPSocket *socket, void *vbuf, int32_t len);
-
-IrisServer::IrisServer(unsigned short port)
+IrespondServer::IrespondServer(unsigned short port)
   : port_(port), kNumThreads(100) { 
   this->database = new FingerprintDatabase("database");
 }
 
-IrisServer::~IrisServer(void) {
+IrespondServer::~IrespondServer(void) {
   delete this->database;
 }
 
-bool IrisServer::Run(void) {
+bool IrespondServer::Run(void) {
   // Create the server listening socket.
   cout << "Listening on port: " << port_ << endl << endl;
   cout << "=================================" << endl << endl;
@@ -56,7 +50,7 @@ bool IrisServer::Run(void) {
     // threadpool to dispatch connections into their own thread.
     ThreadPool tp(kNumThreads);
     while (1) {
-      IrisServerTask *ist = new IrisServerTask(IrisServer_ThrFn);
+      IrespondServerTask *ist = new IrespondServerTask(IrespondServer_ThrFn);
       try {
         ist->client = ss.accept();
         ist->database = this->database;
@@ -83,10 +77,10 @@ static uint8_t HEADER_VERIFY_FAILURE    = 0x05;
 static uint8_t HEADER_ENROLL_SUCCESS    = 0x08;
 static uint8_t HEADER_ERROR             = 0x00;
 
-void IrisServer_ThrFn(ThreadPool::Task *t) {
-  // Cast back our IrisServerTask structure with all of our new
+void IrespondServer_ThrFn(ThreadPool::Task *t) {
+  // Cast back our IrespondServerTask structure with all of our new
   // client's information in it.
-  IrisServerTask *ist = static_cast<IrisServerTask *>(t);
+  IrespondServerTask *ist = static_cast<IrespondServerTask *>(t);
   
   cout << "Connection received from " << ist->client->getForeignAddress() << ":" << ist->client->getForeignPort() << "." << endl;
   
@@ -96,7 +90,6 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
   
   try {
     if (header == HEADER_WSQ_IDENTIFY) {
-      //cout << "IDENTIFY" << endl;
       
       // Get WSQ file size.
       int32_t wsqSize;
@@ -113,17 +106,18 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       // Get XYTQ coordinates of minutiae
       struct xytq_struct fingerTemplate;
       ProcessWSQTransfer(fingerTemplate, wsqSize, wsqData);
-      
-      //cout << "Processed." << endl;
-      
+            
       // Quality is good, shrink down to a template.
       template_t *probe = bz_prune(&fingerTemplate, 0);
       
       uuid matchUuid;
       if (ist->database->identify(probe, matchUuid)) {
         // Send identify success packet.
+        
+        // Send header.
         ist->client->send(&HEADER_IDENTIFY_SUCCESS, 1);
         
+        // Sent UUID.
         uint64_t *uuidLong = (uint64_t *) matchUuid.data;
         uint64_t mostSig = uuidLong[0];
         uint64_t leastSig = uuidLong[1];
@@ -135,13 +129,18 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       }
     } else if (header == HEADER_WSQ_VERIFY) {
       // Perform Verification
+      
+      // Get the number of UUIDs.
       int32_t numUuids;
       receive(ist->client, &numUuids, 4);
       
+      // Convert the number of UUIDs.
       numUuids = ntohl(numUuids);
       
+      // Get all numUuids UUIDs.
       std::set<uuid> verifyUuids;
       for (int32_t i = 0; i < numUuids; i++) {
+        // Get the next UUID.
         uuid verifyUuid;
         uint64_t mostSig, leastSig;
         uint64_t *uuidLong = (uint64_t *) verifyUuid.data;
@@ -150,6 +149,7 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
         receive(ist->client, &leastSig, 8);
         uuidLong[1] = leastSig;
 
+        // Add the UUID to the collection.
         verifyUuids.insert(verifyUuid);
       }
       
@@ -176,9 +176,13 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       ist->client->send(&retHeader, 1);
     } else if (header == HEADER_WSQ_ENROLL) {
       // Perform Enrollment
+      
+      // Get the number of fingerprint
+      // images sent.
       int32_t numImages;
       receive(ist->client, &numImages, 4);
       
+      // Convert the number of images.
       numImages = ntohl(numImages);
       
       // Get best template out of images.
@@ -189,6 +193,7 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
         int32_t wsqSize;
         receive(ist->client, &wsqSize, 4);
         
+        // Convert WSQ size.
         wsqSize = ntohl(wsqSize);
         
         // Get WSQ file bytes.
@@ -220,6 +225,7 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       
       uuid uuid = ist->database->enroll(temp);
       
+      // Send enrollment success packet.
       ist->client->send(&HEADER_ENROLL_SUCCESS, 1);
       uint64_t *uuidLong = (uint64_t *) uuid.data;
       uint64_t mostSig = uuidLong[0];
@@ -230,12 +236,14 @@ void IrisServer_ThrFn(ThreadPool::Task *t) {
       throw "Invalid header.";
     }
   } catch (char const *errorMessage) {
-    //cout << "Error: " << errorMessage << endl << endl;
-    //cout << "=================================" << endl << endl;
+    cout << "Error: " << errorMessage << endl << endl;
+    cout << "=================================" << endl << endl;
     
+    // Convert length to network format.
     int32_t errLen = htonl(strlen(errorMessage));
     
     try {
+      // Send error packet, if possible.
       ist->client->send(&HEADER_ERROR, 1);
       ist->client->send(&errLen, 4);
       ist->client->send(errorMessage, errLen);
@@ -307,18 +315,25 @@ void ProcessWSQTransfer(struct xytq_struct &oxytq, int32_t wsqLen, const char *w
   free(data);
 }
 
+/**
+ * Parse the minutiae into the template format.
+ */
 void ParseMinutiae(struct xytq_struct &oxytq, MINUTIAE *minutiae, int w, int h) {
   oxytq.nrows = minutiae->num;
   
   MINUTIA *minutia;
+  // Iterate over every minutia.
   for (int i = 0; i < minutiae->num; i++) {
     minutia = minutiae->list[i];
     
+    // Get the X, Y, and T columns.
     int ox, oy, ot;
     lfs2nist_minutia_XYT(&ox, &oy, &ot, minutia, w, h);
     
+    // Parse the q column.
     int oq = sround(minutia->reliability * 100.0);
     
+    // Assign these columns.
     oxytq.xcol[i] = ox;
     oxytq.ycol[i] = oy;
     oxytq.thetacol[i] = ot;
@@ -326,6 +341,9 @@ void ParseMinutiae(struct xytq_struct &oxytq, MINUTIAE *minutiae, int w, int h) 
   }
 }
 
+/**
+ * Read len bytes from the socket, into vbuf.
+ */
 void receive(TCPSocket *socket, void *vbuf, int32_t len) {
   char *buf = (char *) vbuf;
   int32_t totalRead = 0;
@@ -335,4 +353,4 @@ void receive(TCPSocket *socket, void *vbuf, int32_t len) {
 }
 
 
-}  // namespace iris
+}  // namespace irespond
