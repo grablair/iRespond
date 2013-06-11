@@ -5,6 +5,7 @@
 namespace irespond {
 namespace utilities {
 
+bool _memoryMode = false;
 bool _verbose = false;
 std::ostream _log(0);
 
@@ -20,6 +21,20 @@ std::ostream &log() {
  */
 void initLog() {
   _verbose = true;
+}
+
+/**
+ * Returns whether or not we are in memory mode.
+ */
+bool memoryMode() {
+  return _memoryMode;
+}
+
+/**
+ * Sets the memory mode to on iff the param is true.
+ */
+void setMemoryMode(bool on) {
+  _memoryMode = on;
 }
 
 }

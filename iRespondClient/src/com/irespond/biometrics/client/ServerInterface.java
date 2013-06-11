@@ -32,7 +32,7 @@ public class ServerInterface {
 	
 	// The address and listening port of the server.
 	// TODO: This needs to be updated. The current IP/port is that of the dev's laptop.
-	public static String serverAddress = "173.250.188.41";
+	public static String serverAddress = "192.168.1.111";
 	public static int serverPort = 8080;
 	
 	/**

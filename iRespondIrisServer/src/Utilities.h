@@ -17,6 +17,21 @@ std::ostream &log();
  */
 void initLog();
 
+/**
+ * Returns the current memory mode.
+ * 
+ * @return true iff all data should be stored in memory.
+ */
+bool memoryMode();
+
+/**
+ * Sets the memory mode to the value of on.
+ * 
+ * @param on A boolean value. If true, memory mode if on,
+ *           off otherwise.
+ */
+void setMemoryMode(bool on);
+
 }
 }
 

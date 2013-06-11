@@ -20,8 +20,9 @@ extern "C" {
 #include <nfiq.h>
 }
 
-#include "./iRespondServer.h"
-#include "./PracticalSocket.h"
+#include "Utilities.h"
+#include "iRespondServer.h"
+#include "PracticalSocket.h"
 
 using std::cerr;
 using std::cout;
@@ -96,8 +97,6 @@ void IrespondServer_ThrFn(ThreadPool::Task *t) {
       receive(ist->client, &wsqSize, 4);
       
       wsqSize = ntohl(wsqSize);
-      
-      cout << wsqSize << endl;
       
       // Get WSQ file bytes.
       char wsqData[wsqSize];
@@ -253,6 +252,8 @@ void IrespondServer_ThrFn(ThreadPool::Task *t) {
   } catch (SocketException &e) {
     cout << "Network error: " << e.what() << endl;
   }
+  
+  utilities::log() << "=================================" << endl << endl;
   
   delete ist;
 }

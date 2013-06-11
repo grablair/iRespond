@@ -6,6 +6,7 @@
 #include "iRespondServer.h"
 
 #define OPTION_VERBOSE 'v'
+#define OPTION_MEMORY_MODE 'm'
 
 using std::cerr;
 using std::cout;
@@ -16,7 +17,14 @@ bool verbose = false;
 
 int main(int argc, char **argv) {
   if (argc < 2 || argc > 3) {
-    cout << "Usage: irespond [-v] <port number>" << endl;
+    cout << "Usage: irespond [-vm] <port number>" << endl;
+    cout << "Loads a fingerprint database and server from file, creating" << endl;
+    cout << "a new database if needed." << endl << endl;
+    cout << "    -v - Verbose. Shows more information on connections." << endl;
+    cout << "    -m - Memory mode. All templates are loaded into memory" << endl;
+    cout << "         at load-time. Not recommended for machines with" << endl;
+    cout << "         low memory or databases with a large amount of" << endl;
+    cout << "         fingerprint templates." << endl;
     exit(1);
   }
   
@@ -30,6 +38,10 @@ int main(int argc, char **argv) {
       switch (argv[1][i]) {
       case OPTION_VERBOSE:
         irespond::utilities::initLog();
+        break;
+      case OPTION_MEMORY_MODE:
+        irespond::utilities::setMemoryMode(true);
+        break;
       }
     }
     port = atoi(argv[2]);
