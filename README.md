@@ -10,7 +10,7 @@ First, the Biometric software.
 
 ### The Server
 
-The server can be found in the ```iRespondIrisServer``` folder. It is written in C++. Your system must support pthreads and have the boost-devel package installed. You can build the server by going to the ```iRespondIrisServer``` and typing ```make```. The executable will be in the ```bin``` folder and will be names ```irespond```.
+The server can be found in the ```iRespondIrisServer``` folder. It is written in C++. Your system must support pthreads and have the boost-devel package installed. You can build the server by going to the ```iRespondIrisServer``` directory and typing ```make```. The executable will be in the ```bin``` folder and will be named ```irespond```.
 
 To run the server, you simply type ```./irespond [-mv] <port number>```. Run the program with no arguments to see what the options mean.
 
